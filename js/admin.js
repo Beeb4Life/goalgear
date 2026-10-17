@@ -24,6 +24,20 @@ function getProductFallbackImage(dept) {
   return 'images/products/placeholder-ball.svg';
 }
 
+function handleImageFallback(img, fallbackImg) {
+  const src = img.getAttribute('src') || '';
+  if (src.endsWith('.jpg')) {
+    img.src = src.replace(/\.jpg$/, '.png');
+  } else if (src.endsWith('.png') && !img.dataset.triedJpg) {
+    img.dataset.triedJpg = 'true';
+    img.src = src.replace(/\.png$/, '.jpg');
+  } else {
+    img.onerror = null;
+    img.src = fallbackImg;
+  }
+}
+window.handleImageFallback = handleImageFallback;
+
 // ====================================================================
 // Authentication & Protection
 // ====================================================================
@@ -173,7 +187,7 @@ async function loadAdminProducts() {
             <img 
               src="${escapeHtml(p.image_url)}" 
               style="width: 40px; height: 40px; object-fit: contain;" 
-              onerror="this.onerror=null; this.src='${fallbackImg}';"
+              onerror="handleImageFallback(this, '${fallbackImg}');"
             >
           </td>
           <td>

@@ -75,7 +75,7 @@ const inMemoryStore = {
             price: 149.99,
             stock_quantity: 25,
             description: 'Official match ball of the UEFA Champions League knockout rounds. Thermally bonded seamless surface delivers true trajectory, predictable flight, and minimal moisture absorption.',
-            image_url: 'images/products/adidas-ucl-pro.jpg',
+            image_url: 'images/products/adidas-ucl-pro.png',
             is_featured: true,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
@@ -93,13 +93,31 @@ const inMemoryStore = {
             price: 159.99,
             stock_quantity: 18,
             description: 'Honed over 8 years and 1,700 hours of testing, Nike Flight revolutionizes consistent ball flight with Aerowsculpt molded grooves.',
-            image_url: 'images/products/nike-flight-match.jpg',
+            image_url: 'images/products/nike-flight-match.png',
             is_featured: true,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
         },
         {
             id: 'p-2003',
+            name: 'Puma Orbita Serie A FIFA Quality Pro',
+            brand: 'Puma',
+            department: 'Balls',
+            category: 'Match Ball',
+            ball_size: 5,
+            size_label: 'Size 5',
+            surface: 'Grass',
+            fifa_rating: 'FIFA Quality Pro',
+            price: 139.99,
+            stock_quantity: 15,
+            description: 'Official match ball of Serie A. Features a 12-panel star configuration with high-frequency molded construction for exceptional touch and shape retention.',
+            image_url: 'images/products/puma-orbita-pro.png',
+            is_featured: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+        },
+        {
+            id: 'p-2004',
             name: 'Select Numero 10 V23 All-Weather',
             brand: 'Select',
             department: 'Balls',
@@ -111,13 +129,13 @@ const inMemoryStore = {
             price: 49.99,
             stock_quantity: 40,
             description: 'The legendary training and match ball used by colleges and clubs worldwide. Hand-sewn 32-panel design with textured PU synthetic leather.',
-            image_url: 'images/products/select-numero-10.jpg',
+            image_url: 'images/products/select-numero-10.png',
             is_featured: true,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
         },
         {
-            id: 'p-2004',
+            id: 'p-2005',
             name: 'Select Futsal Super FIFA Pro',
             brand: 'Select',
             department: 'Balls',
@@ -129,7 +147,7 @@ const inMemoryStore = {
             price: 64.99,
             stock_quantity: 22,
             description: 'Top-grade official match futsal ball with a specialized low-rebound butyl bladder for optimum control and precision handling on indoor courts.',
-            image_url: 'images/products/select-futsal-super.jpg',
+            image_url: 'images/products/placeholder-ball.svg',
             is_featured: false,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
@@ -148,7 +166,7 @@ const inMemoryStore = {
             price: 244.99,
             stock_quantity: 16,
             description: 'Equipped with football-specific 3/4 Zoom Air unit and grippy Vaporposite+ upper for explosive speed and razor-sharp cuts on firm grass pitches.',
-            image_url: 'images/products/nike-mercurial-vapor.jpg',
+            image_url: 'images/products/nike-mercurial-vapor.png',
             is_featured: true,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
@@ -166,7 +184,7 @@ const inMemoryStore = {
             price: 259.99,
             stock_quantity: 14,
             description: 'Iconic foldover tongue with elastic strap and precision Strikeskin rubber fins engineered for pin-point curve and clinical finishing power.',
-            image_url: 'images/products/adidas-predator-elite.jpg',
+            image_url: 'images/products/adidas-predator-elite.png',
             is_featured: true,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
@@ -184,8 +202,8 @@ const inMemoryStore = {
             price: 74.99,
             stock_quantity: 30,
             description: 'The timeless low-profile indoor football legend. Full-grain leather upper with suede toe overlay and non-marking gum rubber cupsole for maximum traction.',
-            image_url: 'images/products/adidas-samba-classic.jpg',
-            is_featured: true,
+            image_url: 'images/products/placeholder-boots.svg',
+            is_featured: false,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
         },
@@ -203,7 +221,7 @@ const inMemoryStore = {
             price: 14.99,
             stock_quantity: 60,
             description: 'Engineered with silicone suction grip technology on the sole and heel. Eliminates foot slippage inside boots, preventing blisters and maximizing speed transfer.',
-            image_url: 'images/products/goalgear-grip-socks.jpg',
+            image_url: 'images/products/goalgear-grip-socks.png',
             is_featured: true,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
@@ -221,7 +239,7 @@ const inMemoryStore = {
             price: 12.99,
             stock_quantity: 45,
             description: 'Sweat-wicking Dri-FIT fabric with targeted zonal cushioning underfoot for shock absorption and snug arch band support throughout 90 minutes.',
-            image_url: 'images/products/nike-squad-socks.jpg',
+            image_url: 'images/products/placeholder-socks.svg',
             is_featured: false,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
@@ -239,7 +257,7 @@ const inMemoryStore = {
             price: 16.99,
             stock_quantity: 35,
             description: 'Hexagonal traction pads across the ball and heel of the foot ensure zero energy loss when changing directions at top match intensity.',
-            image_url: 'images/products/gte-hexagrip-socks.jpg',
+            image_url: 'images/products/placeholder-socks.svg',
             is_featured: false,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()

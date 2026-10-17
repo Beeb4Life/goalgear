@@ -61,6 +61,20 @@ function getProductFallbackImage(dept) {
   return 'images/products/placeholder-ball.svg';
 }
 
+function handleImageFallback(img, fallbackImg) {
+  const src = img.getAttribute('src') || '';
+  if (src.endsWith('.jpg')) {
+    img.src = src.replace(/\.jpg$/, '.png');
+  } else if (src.endsWith('.png') && !img.dataset.triedJpg) {
+    img.dataset.triedJpg = 'true';
+    img.src = src.replace(/\.png$/, '.jpg');
+  } else {
+    img.onerror = null;
+    img.src = fallbackImg;
+  }
+}
+window.handleImageFallback = handleImageFallback;
+
 // ====================================================================
 // API Calls
 // ====================================================================
@@ -168,7 +182,7 @@ function createProductCardHtml(p) {
           <img 
             src="${escapeHtml(p.image_url)}" 
             alt="${escapeHtml(p.name)}" 
-            onerror="this.onerror=null; this.src='${fallbackImg}';"
+            onerror="handleImageFallback(this, '${fallbackImg}');"
           >
         </div>
         <div class="productMeta">
@@ -356,7 +370,7 @@ async function openProductDetail(productId) {
             src="${escapeHtml(p.image_url)}" 
             alt="${escapeHtml(p.name)}" 
             style="max-width: 100%; max-height: 240px; object-fit: contain;" 
-            onerror="this.onerror=null; this.src='${fallbackImg}';"
+            onerror="handleImageFallback(this, '${fallbackImg}');"
           >
         </div>
         <div style="flex: 2 1 280px;">
@@ -426,7 +440,7 @@ function renderCartModal() {
     return `
       <tr>
         <td style="width: 50px;">
-          <img src="${escapeHtml(item.image_url)}" style="width: 40px; height: 40px; object-fit: contain;" onerror="this.onerror=null; this.src='${fallbackImg}';">
+          <img src="${escapeHtml(item.image_url)}" style="width: 40px; height: 40px; object-fit: contain;" onerror="handleImageFallback(this, '${fallbackImg}');">
         </td>
         <td>
           <strong>${escapeHtml(item.name)}</strong><br>
