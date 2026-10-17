@@ -1,30 +1,530 @@
 @charset "utf-8";
 
-/* CSS document for Mom and Pop web site*/
+/* ====================================================================
+   GoalGear - Classic Clean Stylesheet
+   Maintains the clean, simple, and classic layout of the original site
+   while adding responsive grids, buttons, tables, and modal dialogs.
+   ==================================================================== */
 
+:root {
+  --primary-color: #1b4332;
+  --primary-hover: #2d6a4f;
+  --accent-gold: #d4a373;
+  --bg-light: #f8f9fa;
+  --border-color: #dee2e6;
+  --text-dark: #212529;
+  --text-muted: #6c757d;
+  --danger-color: #d90429;
+  --success-color: #2b9348;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body.bodyStyle {
+  width: 96%;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 12px;
+  font-family: 'Lucida Grande', 'Lucida Sans Unicode', Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-dark);
+  background-color: #ffffff;
+}
+
+/* Helpers */
 .center {
   text-align: center;
- }
-
-.bodyStyle {
-	width: 960px;
-	margin: 0 auto;
-	overflow: auto;
-	font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'sans-serif';
-	font-size: 15px;
 }
 
+hr {
+  border: 0;
+  border-top: 1px solid var(--border-color);
+  margin: 18px 0;
+}
+
+/* ====================================================================
+   Header & Top Navigation
+   ==================================================================== */
 .mainHeader {
-  	font-family: "Comic Sans MS", cursive;
-	font-size: 60px;
-	line-height: 66px;
-	color: #000;
-	text-align: center;
+  text-align: center;
+  padding: 10px 0;
 }
+
+.brandTitle {
+  font-size: 42px;
+  font-weight: bold;
+  color: var(--primary-color);
+  letter-spacing: -1px;
+  margin: 0;
+}
+
+.brandTagline {
+  font-size: 16px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.topNavBar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 2px solid var(--primary-color);
+}
+
+.navLinks a {
+  color: var(--text-dark);
+  text-decoration: none;
+  font-weight: bold;
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+
+.navLinks a:hover {
+  background-color: var(--bg-light);
+  color: var(--primary-color);
+}
+
+.navActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ====================================================================
+   Standard Buttons
+   ==================================================================== */
+.btn {
+  display: inline-block;
+  padding: 7px 14px;
+  font-size: 14px;
+  font-weight: bold;
+  font-family: inherit;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: #ffffff;
+  border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.btn-secondary {
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+  border-color: var(--border-color);
+}
+
+.btn-secondary:hover {
+  background-color: #e9ecef;
+}
+
+.btn-danger {
+  background-color: var(--danger-color);
+  color: #ffffff;
+}
+
+.btn-danger:hover {
+  background-color: #b00020;
+}
+
+.btn-sm {
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+/* ====================================================================
+   Hero Banner & Notice
+   ==================================================================== */
+.heroBanner {
+  background-color: #e8f5e9;
+  border: 1px solid #c8e6c9;
+  border-radius: 6px;
+  padding: 24px;
+  text-align: center;
+  margin: 15px 0;
+}
+
+.heroBanner h2 {
+  margin: 0 0 10px 0;
+  font-size: 26px;
+  color: var(--primary-color);
+}
+
+.heroBanner p {
+  margin: 0 0 14px 0;
+  color: #2b303a;
+  max-width: 750px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.demoBadgeNotice {
+  display: inline-block;
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 4px;
+  margin-top: 6px;
+}
+
+/* ====================================================================
+   Filter & Search Toolbar
+   ==================================================================== */
+.searchToolbar {
+  background-color: var(--bg-light);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 14px;
+  margin-bottom: 20px;
+}
+
+.filterControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.filterControls input[type="text"],
+.filterControls select {
+  padding: 7px 10px;
+  font-size: 14px;
+  font-family: inherit;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: #ffffff;
+}
+
+.filterControls input[type="text"] {
+  flex: 1 1 200px;
+}
+
+/* ====================================================================
+   Product Grid & Cards
+   ==================================================================== */
+.productGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 18px;
+  margin-top: 15px;
+}
+
+.productCard {
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 12px;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.productCard:hover {
+  border-color: #adb5bd;
+}
+
+.productImageWrap {
+  width: 100%;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.productImageWrap img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.productMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.productName {
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin: 4px 0 8px 0;
+  cursor: pointer;
+}
+
+.productPrice {
+  font-size: 18px;
+  font-weight: bold;
+  color: #111827;
+  margin: 6px 0;
+}
+
+.productSpecsBadge {
+  display: inline-block;
+  background-color: #e9ecef;
+  color: #495057;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-right: 4px;
+  margin-bottom: 6px;
+}
+
+.stockBadge {
+  font-size: 12px;
+  font-weight: bold;
+}
+.inStock {
+  color: var(--success-color);
+}
+.outOfStock {
+  color: var(--danger-color);
+}
+
+.cardButtons {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+}
+.cardButtons .btn {
+  flex: 1;
+}
+
+/* ====================================================================
+   Simple Classic Info Blocks (Preserving Café Spirit)
+   ==================================================================== */
+.classicTableGrid {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 15px 0;
+}
+
+.classicTableGrid td {
+  padding: 16px;
+  vertical-align: top;
+  border: 1px solid var(--border-color);
+}
+
 .cursiveText {
-	font-family: "Comic Sans MS", cursive;
-	font-size: 18px;
-	line-height: 24px;
-	color: #000;
-	text-align: center;
+  font-weight: bold;
+  font-size: 16px;
+  color: var(--primary-color);
+  margin-bottom: 8px;
+}
+
+/* ====================================================================
+   Modal Dialogs
+   ==================================================================== */
+.modalOverlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+}
+
+.modalOverlay.active {
+  display: flex;
+}
+
+.modalContent {
+  background-color: #ffffff;
+  border-radius: 6px;
+  width: 100%;
+  max-width: 580px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  position: relative;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+.modalHeader h3 {
+  margin: 0;
+  color: var(--primary-color);
+  font-size: 20px;
+}
+
+.closeModalBtn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+.closeModalBtn:hover {
+  color: var(--text-dark);
+}
+
+/* ====================================================================
+   Form Inputs & Tables inside Modals
+   ==================================================================== */
+.formGroup {
+  margin-bottom: 12px;
+}
+
+.formGroup label {
+  display: block;
+  font-weight: bold;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.formGroup input,
+.formGroup select,
+.formGroup textarea {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 14px;
+  font-family: inherit;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+}
+
+.formGroup textarea {
+  resize: vertical;
+  min-height: 70px;
+}
+
+.alertBox {
+  padding: 10px 14px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+.alertError {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+.alertSuccess {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+/* Tables for Orders & Cart */
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  margin: 10px 0;
+}
+
+.dataTable th,
+.dataTable td {
+  border: 1px solid var(--border-color);
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.dataTable th {
+  background-color: var(--bg-light);
+  font-weight: bold;
+}
+
+.statusBadge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+.status-pending { background-color: #fff3cd; color: #856404; }
+.status-processing { background-color: #cce5ff; color: #004085; }
+.status-shipped { background-color: #d1ecf1; color: #0c5460; }
+.status-delivered { background-color: #d4edda; color: #155724; }
+.status-cancelled { background-color: #f8d7da; color: #721c24; }
+
+/* Admin Dashboard Cards */
+.adminStatGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin: 15px 0;
+}
+
+.statCard {
+  background-color: var(--bg-light);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 15px;
+  text-align: center;
+}
+
+.statValue {
+  font-size: 26px;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin-top: 4px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .bodyStyle {
+    width: 100%;
+    padding: 8px;
+  }
+  .brandTitle {
+    font-size: 32px;
+  }
+  .topNavBar {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+  .navActions {
+    justify-content: center;
+  }
+  .classicTableGrid,
+  .classicTableGrid tbody,
+  .classicTableGrid tr,
+  .classicTableGrid td {
+    display: block;
+    width: 100%;
+  }
 }

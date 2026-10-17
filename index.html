@@ -1,98 +1,334 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<meta charset="ISO-8859-1">
-	<title>Welcome to the Caf&eacute;!</title>
-	<link rel="stylesheet" href="css/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GoalGear — Dynamic Football Store</title>
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 
 <body class="bodyStyle">
 
-	<div id="header" class="mainHeader">
-		<hr>
-		<div class="center">Caf&eacute;</div>
-	</div>
-	<br>
+  <!-- ================================================================
+       1. Main Header & Top Navigation
+       ================================================================ -->
+  <header id="header" class="mainHeader">
+    <div class="brandTitle">&#9917; GoalGear</div>
+    <div class="brandTagline">Authentic Footballs &amp; Soccer Balls Only &bull; Precision on Every Pitch</div>
+  </header>
 
-	<div id="mainContent">
-		<hr>
-		<div id="mainPictures" class="center">
-			<table>
-				<tr>
-					<td><img src="images/Coffee-and-Pastries.png" height=auto width="490"></td>
-					<td><img src="images/Cake-Vitrine.png" height=auto width="450"></td>
-				</tr>
-			</table>
-			<hr>
-			<p>The Caf&eacute; offers an assortment of delicious and delectable pastries and coffees that will put a smile on your face. From cookies to croissants, tarts and cakes, each treat is specially prepared to excite your tastebuds and brighten your day!</p>
-			<br>
-			<table>
-				<tr>
-					<td bgcolor="aquamarine">
-						<div class="cursiveText">Frank bakes a rich variety of cookies. Try them all!</div>
-						<table>
-							<tr>
-								<td><img src="images/Cookies.png" height=auto width="300"></td>
-							</tr>
-						</table>
-					</td>
-					<td bgcolor="orange">
-						<table>
-							<tr>
-								<td><img src="images/Cup-of-Hot-Chocolate.png" height=auto width="200"></td>
-								<td class="cursiveText">Tea<br>Coffee<br>Latte<br>Hot Chocolate<br>Yes, we have it!</td>
-							</tr>
-						</table>
-					</td>
-					<td bgcolor="aquamarine">
-						<div class="cursiveText">Our tarts are always a customer favorite!<br><br>
-					  </div>
-						<table>
-							<tr>
-								<td><img src="images/Strawberry-Tarts.png" height=auto width="170"></td>
-								<td><img src="images/Strawberry-&-Blueberry-Tarts.png" height=auto width="170"></td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-			</table>
-			<hr>
-		</div>
-	</div>
+  <nav class="topNavBar">
+    <div class="navLinks">
+      <a href="#featuredSection">Featured Balls</a>
+      <a href="#catalogueSection">Catalogue</a>
+      <a href="#aboutUs">About GoalGear</a>
+      <a href="#contactUs">Contact &amp; Hours</a>
+    </div>
 
-	<div id="aboutUs" class="center">
-		<hr>
-		<div>
-			<h2>About Us</h2>
-		</div>
-			<table>
-				<tr>
-					<td><img src="images/Cafe-Owners.png" height=auto width="400"></td>
-					<td><p>Frank and Martha have been adding sweetness to their customers's lives since 2016. Both of them will personally greet you with a welcoming smile when you visit! Frank's recipes have been passed down from his mother and use simple and fresh ingredients to produce delightful flavors.</p></td>
-				</tr>
-			</table>
-			<hr>
-		</div>
+    <div class="navActions">
+      <div id="userNavSection">
+        <!-- Dynamically injected user state (Sign In/Register or User Profile) -->
+      </div>
+      <button class="btn btn-primary" onclick="openCartModal()">
+        &#128722; Cart (<span id="cartCountBadge">0</span>)
+      </button>
+    </div>
+  </nav>
 
-	<div id="ContactUs" align="center">
-		<hr>
-		<div>
-			<h2>Contact Us</h2>
-		</div>
-		<table>
-			<tr>
-				<td><img src="images/Coffee-Shop.png" height=auto width="120"></td>
-			</tr>
-		</table>
-		<div><p>123 Sweet Tooth St.<br>London SW1A 0AA, UK<br>Tel: +44-12-12345678</p></div>
-		<div>
-			<h3>Hours</h3>
-		</div>
-		<div>Weekdays: 6:00am - 6:00pm<br>Saturday: 7:00am - 7:00pm<br>Closed on Sundays</div>
-	</div>
+  <!-- ================================================================
+       2. Hero Banner & Demo Mode Notice
+       ================================================================ -->
+  <section class="heroBanner">
+    <h2>Official Match Balls, Training Gear &amp; Vintage Classics</h2>
+    <p>
+      From FIFA Quality Pro tournament balls to durable hand-stitched training spheres and low-bounce futsal balls.
+      Select your size, brand, and preferred pitch surface.
+    </p>
+    <div class="demoBadgeNotice">
+      &#9888; Demo Mode Active: Live Supabase database simulation. No real money or payment is charged for orders.
+    </div>
+  </section>
 
-	<div id="Copyright" class="center">
-		<h5><p>&copy; 2020, Amazon Web Services, Inc. or its Affiliates. All rights reserved.</p></h5>
-	</div>
+  <!-- ================================================================
+       3. Featured Footballs Section
+       ================================================================ -->
+  <section id="featuredSection">
+    <hr>
+    <div class="cursiveText">Featured Selections — Handpicked by Match Specialists</div>
+    <div id="featuredGrid" class="productGrid">
+      <!-- Dynamically populated by js/app.js -->
+    </div>
+  </section>
+
+  <!-- ================================================================
+       4. Dynamic Football Catalogue & Filters
+       ================================================================ -->
+  <section id="catalogueSection" style="margin-top: 30px;">
+    <hr>
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+      <h2 style="margin: 0; color: var(--primary-color);">Product Catalogue</h2>
+      <span id="catalogueCount" style="color: var(--text-muted); font-size: 13px;">Loading footballs...</span>
+    </div>
+
+    <!-- Filter and Search Toolbar -->
+    <div class="searchToolbar">
+      <div class="filterControls">
+        <input type="text" id="searchInput" placeholder="Search football name, brand, or model...">
+        
+        <select id="filterCategory">
+          <option value="">All Categories</option>
+        </select>
+
+        <select id="filterBrand">
+          <option value="">All Brands</option>
+        </select>
+
+        <select id="filterSize">
+          <option value="">All Sizes</option>
+        </select>
+
+        <select id="filterSurface">
+          <option value="">All Surfaces</option>
+        </select>
+
+        <select id="filterSort">
+          <option value="newest">Sort: Newest First</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="name-asc">Alphabetical (A-Z)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Catalogue Grid -->
+    <div id="catalogueGrid" class="productGrid">
+      <!-- Dynamically populated by js/app.js -->
+    </div>
+  </section>
+
+  <!-- ================================================================
+       5. Classic Information & About Us (Preserving Café Structure)
+       ================================================================ -->
+  <section id="aboutUs" class="center" style="margin-top: 40px;">
+    <hr>
+    <h2>About GoalGear</h2>
+    <table class="classicTableGrid">
+      <tr>
+        <td style="width: 40%; background-color: #f8f9fa;">
+          <div class="productImageWrap" style="height: 220px; background: none; margin: 0;">
+            <img src="images/products/placeholder-ball.svg" alt="GoalGear Craftsmanship" style="max-height: 200px;">
+          </div>
+        </td>
+        <td style="text-align: left;">
+          <div class="cursiveText">Supplying Footballers &amp; Academies Since 2016</div>
+          <p>
+            GoalGear was founded by lifelong football enthusiasts dedicated exclusively to the most important piece of equipment in the game: the football.
+            Whether you are competing under stadium floodlights, running youth academy drills on artificial turf, or playing 5-a-side on indoor courts, we curate verified, pressure-tested footballs from Adidas, Nike, Puma, Select, and legendary heritage manufacturers.
+          </p>
+          <p>
+            Every model in our catalogue is rigorously inspected for circumference consistency, sphericity, water absorption, and panel seam bonding.
+          </p>
+        </td>
+      </tr>
+    </table>
+  </section>
+
+  <!-- ================================================================
+       6. Contact Us & Store Hours
+       ================================================================ -->
+  <section id="contactUs" class="center" style="margin-top: 20px;">
+    <hr>
+    <h2>Contact &amp; Pitch Gear Headquarters</h2>
+    <table class="classicTableGrid">
+      <tr>
+        <td style="background-color: #e8f5e9;">
+          <div class="cursiveText">Store &amp; Demo Centre</div>
+          <p>
+            123 Football Way, Stadium Quarter<br>
+            London SW1A 0AA, United Kingdom<br>
+            <strong>Direct Line:</strong> +44-20-7946-0920<br>
+            <strong>Email:</strong> support@goalgear.demo
+          </p>
+        </td>
+        <td style="background-color: #fff3cd;">
+          <div class="cursiveText">Demo Centre Hours</div>
+          <p>
+            Monday &ndash; Friday: 8:00am &ndash; 7:00pm<br>
+            Saturday (Matchday): 8:00am &ndash; 8:00pm<br>
+            Sunday: 10:00am &ndash; 4:00pm
+          </p>
+        </td>
+      </tr>
+    </table>
+  </section>
+
+  <!-- ================================================================
+       7. Footer & Copyright
+       ================================================================ -->
+  <footer id="Copyright" class="center" style="margin-top: 30px; padding: 20px 0; color: var(--text-muted); font-size: 13px;">
+    <hr>
+    <p>&copy; 2026 GoalGear Ltd. All rights reserved. Sells authentic football/soccer balls only.</p>
+    <p>
+      <a href="admin.html" style="color: var(--text-muted); text-decoration: none;">Staff &amp; Admin Portal</a>
+    </p>
+  </footer>
+
+  <!-- ================================================================
+       8. Modals
+       ================================================================ -->
+
+  <!-- Product Details Modal -->
+  <div id="productDetailModal" class="modalOverlay">
+    <div class="modalContent" style="max-width: 650px;">
+      <div class="modalHeader">
+        <h3>Football Specifications</h3>
+        <button class="closeModalBtn" onclick="closeModal('productDetailModal')">&times;</button>
+      </div>
+      <div id="productDetailContent">
+        <!-- Injected by js/app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Shopping Cart Modal -->
+  <div id="cartModal" class="modalOverlay">
+    <div class="modalContent" style="max-width: 650px;">
+      <div class="modalHeader">
+        <h3>Your Shopping Cart</h3>
+        <button class="closeModalBtn" onclick="closeModal('cartModal')">&times;</button>
+      </div>
+      <div id="cartItemsContainer">
+        <!-- Injected by js/app.js -->
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 14px; margin-top: 14px;">
+        <div>
+          <span style="color: var(--text-muted); font-size: 13px;">Order Subtotal:</span><br>
+          <strong id="cartTotalDisplay" style="font-size: 20px; color: var(--primary-color);">&pound;0.00</strong>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-secondary" onclick="closeModal('cartModal')">Continue Shopping</button>
+          <button id="proceedCheckoutBtn" class="btn btn-primary" onclick="openCheckoutModal()">Proceed to Demo Checkout</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checkout Modal -->
+  <div id="checkoutModal" class="modalOverlay">
+    <div class="modalContent" style="max-width: 540px;">
+      <div class="modalHeader">
+        <h3>Demo Order Checkout</h3>
+        <button class="closeModalBtn" onclick="closeModal('checkoutModal')">&times;</button>
+      </div>
+      <div id="checkoutContentArea">
+        <div id="checkoutAlert" class="alertBox alertError" style="display: none;"></div>
+        <div id="checkoutOrderSummary"></div>
+
+        <form id="checkoutForm">
+          <div class="formGroup">
+            <label for="checkoutName">Full Name *</label>
+            <input type="text" id="checkoutName" required placeholder="e.g. Alex Striker">
+          </div>
+          <div class="formGroup">
+            <label for="checkoutEmail">Email Address (for order confirmation) *</label>
+            <input type="email" id="checkoutEmail" required placeholder="e.g. striker@goalgear.demo">
+          </div>
+          <div class="formGroup">
+            <label for="checkoutAddress">Delivery Address *</label>
+            <input type="text" id="checkoutAddress" required placeholder="e.g. 10 Wembley Way">
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <div class="formGroup" style="flex: 1;">
+              <label for="checkoutCity">City *</label>
+              <input type="text" id="checkoutCity" required placeholder="e.g. London">
+            </div>
+            <div class="formGroup" style="flex: 1;">
+              <label for="checkoutPostal">Postal Code *</label>
+              <input type="text" id="checkoutPostal" required placeholder="e.g. HA9 0WS">
+            </div>
+          </div>
+          <div class="formGroup">
+            <label for="checkoutCountry">Country</label>
+            <input type="text" id="checkoutCountry" value="United Kingdom" required>
+          </div>
+
+          <div style="background-color: #fff3cd; border: 1px solid #ffeeba; border-radius: 4px; padding: 10px; font-size: 12px; margin-bottom: 15px; color: #856404;">
+            <strong>Demo Checkout:</strong> No real payment card or banking information is requested. Clicking "Confirm Demo Order" will decrement live inventory and create your order in the database.
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 8px;">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('checkoutModal')">Cancel</button>
+            <button type="submit" id="submitOrderBtn" class="btn btn-primary">Confirm &amp; Place Demo Order</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Customer Auth Modal (Login / Register) -->
+  <div id="authModal" class="modalOverlay">
+    <div class="modalContent" style="max-width: 420px;">
+      <div class="modalHeader">
+        <h3 id="authModalTitle">Customer Access</h3>
+        <button class="closeModalBtn" onclick="closeModal('authModal')">&times;</button>
+      </div>
+
+      <div id="authAlert" class="alertBox" style="display: none;"></div>
+
+      <!-- Login Form -->
+      <form id="loginForm">
+        <div class="formGroup">
+          <label for="loginEmail">Email Address</label>
+          <input type="email" id="loginEmail" required placeholder="e.g. customer@goalgear.demo">
+        </div>
+        <div class="formGroup">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" required placeholder="Your password">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 6px;">Sign In</button>
+        <p class="center" style="font-size: 13px; margin-top: 14px;">
+          Don't have an account? 
+          <a href="#" onclick="openAuthModal('register'); return false;" style="color: var(--primary-color); font-weight: bold;">Create one</a>
+        </p>
+      </form>
+
+      <!-- Register Form -->
+      <form id="registerForm" style="display: none;">
+        <div class="formGroup">
+          <label for="regName">Full Name</label>
+          <input type="text" id="regName" required placeholder="e.g. Alex Striker">
+        </div>
+        <div class="formGroup">
+          <label for="regEmail">Email Address</label>
+          <input type="email" id="regEmail" required placeholder="e.g. striker@goalgear.demo">
+        </div>
+        <div class="formGroup">
+          <label for="regPassword">Password (Min 6 characters)</label>
+          <input type="password" id="regPassword" required minlength="6" placeholder="Choose a secure password">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 6px;">Register Account</button>
+        <p class="center" style="font-size: 13px; margin-top: 14px;">
+          Already have an account? 
+          <a href="#" onclick="openAuthModal('login'); return false;" style="color: var(--primary-color); font-weight: bold;">Sign In</a>
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Customer Order History Modal -->
+  <div id="orderHistoryModal" class="modalOverlay">
+    <div class="modalContent" style="max-width: 650px;">
+      <div class="modalHeader">
+        <h3>My Football Orders</h3>
+        <button class="closeModalBtn" onclick="closeModal('orderHistoryModal')">&times;</button>
+      </div>
+      <div id="orderHistoryContainer">
+        <!-- Populated dynamically by js/app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Storefront Client Script -->
+  <script src="js/app.js"></script>
 </body>
 </html>

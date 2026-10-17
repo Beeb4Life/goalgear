@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GoalGear — Admin Management Portal</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body class="bodyStyle">
+
+  <!-- ================================================================
+       1. Admin Header
+       ================================================================ -->
+  <header class="mainHeader">
+    <div class="brandTitle">&#9917; GoalGear Admin</div>
+    <div class="brandTagline">Football Store Inventory &amp; Order Management Portal</div>
+  </header>
+
+  <nav class="topNavBar">
+    <div class="navLinks">
+      <a href="index.html">&larr; Back to Public Storefront</a>
+    </div>
+
+    <div class="navActions" id="adminAuthNav">
+      <!-- Admin user state (Logout / Current Admin) -->
+    </div>
+  </nav>
+
+  <!-- ================================================================
+       2. Login Form (Shown when admin is unauthenticated)
+       ================================================================ -->
+  <section id="adminLoginSection" style="max-width: 420px; margin: 40px auto; display: none;">
+    <div style="border: 1px solid var(--border-color); border-radius: 6px; padding: 22px; background-color: #ffffff;">
+      <h3 style="margin-top: 0; color: var(--primary-color);">Administrator Login</h3>
+      <p style="font-size: 13px; color: var(--text-muted);">
+        Sign in with an authorized admin account to manage products, inventory, and orders.
+      </p>
+
+      <div id="adminLoginAlert" class="alertBox alertError" style="display: none;"></div>
+
+      <form id="adminLoginForm">
+        <div class="formGroup">
+          <label for="adminEmail">Admin Email</label>
+          <input type="email" id="adminEmail" required placeholder="admin@goalgear.demo">
+        </div>
+        <div class="formGroup">
+          <label for="adminPassword">Admin Password</label>
+          <input type="password" id="adminPassword" required placeholder="Password">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">
+          Log In to Admin Dashboard
+        </button>
+      </form>
+
+      <div style="margin-top: 15px; padding: 10px; background-color: #f8f9fa; border-radius: 4px; font-size: 12px; color: #495057;">
+        <strong>Demo Admin Credentials:</strong><br>
+        Email: <code>admin@goalgear.demo</code><br>
+        Password: <code>GoalGearAdmin2026!</code>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       3. Admin Dashboard (Protected - Shown after successful login)
+       ================================================================ -->
+  <main id="adminDashboardSection" style="display: none;">
+    
+    <!-- Top Metrics Overview -->
+    <section>
+      <div class="adminStatGrid">
+        <div class="statCard">
+          <span style="color: var(--text-muted); font-size: 13px;">Total Revenue</span>
+          <div class="statValue" id="statRevenue">&pound;0.00</div>
+        </div>
+        <div class="statCard">
+          <span style="color: var(--text-muted); font-size: 13px;">Total Orders</span>
+          <div class="statValue" id="statOrders">0</div>
+        </div>
+        <div class="statCard">
+          <span style="color: var(--text-muted); font-size: 13px;">Footballs in Catalogue</span>
+          <div class="statValue" id="statProducts">0</div>
+        </div>
+        <div class="statCard">
+          <span style="color: var(--text-muted); font-size: 13px;">Low Stock Alerts (&le;10)</span>
+          <div class="statValue" id="statLowStock" style="color: var(--danger-color);">0</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Low Stock Notice Banner -->
+    <div id="lowStockAlertBanner" style="display: none;" class="alertBox alertError">
+      <strong>Inventory Warning:</strong> One or more footballs have 10 or fewer units remaining in stock. Check the table below to replenish.
+    </div>
+
+    <!-- Product Catalogue CRUD Section -->
+    <section style="margin-top: 30px;">
+      <hr>
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+        <h2 style="margin: 0; color: var(--primary-color);">Football Catalogue Management</h2>
+        <button class="btn btn-primary" onclick="openAddProductModal()">+ Add New Football</button>
+      </div>
+
+      <div style="overflow-x: auto;">
+        <table class="dataTable" id="adminProductsTable">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Name &amp; Brand</th>
+              <th>Category</th>
+              <th>Size</th>
+              <th>Surface</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th>Featured</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="adminProductsTbody">
+            <tr><td colspan="9" class="center">Loading products...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Customer Orders Management Section -->
+    <section style="margin-top: 40px;">
+      <hr>
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+        <h2 style="margin: 0; color: var(--primary-color);">Customer Orders &amp; Fulfillment</h2>
+        <div>
+          <label for="adminOrderFilter" style="font-size: 13px; font-weight: bold; margin-right: 6px;">Filter Status:</label>
+          <select id="adminOrderFilter" onchange="filterAdminOrders(this.value)" style="padding: 5px 8px; font-size: 13px; border: 1px solid var(--border-color); border-radius: 4px;">
+            <option value="">All Orders</option>
+            <option value="pending">Pending</option>
+            <option value="processing">Processing</option>
+            <option value="shipped">Shipped</option>
+            <option value="delivered">Delivered</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="overflow-x: auto;">
+        <table class="dataTable" id="adminOrdersTable">
+          <thead>
+            <tr>
+              <th>Order #</th>
+              <th>Date</th>
+              <th>Customer</th>
+              <th>Items &amp; Details</th>
+              <th>Total</th>
+              <th>Current Status</th>
+              <th>Update Status</th>
+            </tr>
+          </thead>
+          <tbody id="adminOrdersTbody">
+            <tr><td colspan="7" class="center">Loading orders...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================================================================
+       4. Product Modal (Add / Edit Football)
+       ================================================================ -->
+  <div id="productModal" class="modalOverlay">
+    <div class="modalContent" style="max-width: 600px;">
+      <div class="modalHeader">
+        <h3 id="productModalTitle">Add New Football</h3>
+        <button class="closeModalBtn" onclick="closeModal('productModal')">&times;</button>
+      </div>
+
+      <div id="productModalAlert" class="alertBox alertError" style="display: none;"></div>
+
+      <form id="productForm">
+        <input type="hidden" id="prodEditId">
+
+        <div class="formGroup">
+          <label for="prodName">Ball Model / Name *</label>
+          <input type="text" id="prodName" required placeholder="e.g. Adidas UCL Pro London Match Ball">
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <div class="formGroup" style="flex: 1;">
+            <label for="prodBrand">Brand *</label>
+            <input type="text" id="prodBrand" required placeholder="e.g. Adidas">
+          </div>
+          <div class="formGroup" style="flex: 1;">
+            <label for="prodCategory">Category *</label>
+            <select id="prodCategory" required>
+              <option value="Match Ball">Match Ball</option>
+              <option value="Training Ball">Training Ball</option>
+              <option value="Futsal Ball">Futsal Ball</option>
+              <option value="Retro/Heritage">Retro/Heritage</option>
+              <option value="Mini Ball">Mini Ball</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <div class="formGroup" style="flex: 1;">
+            <label for="prodSize">Ball Size *</label>
+            <select id="prodSize" required>
+              <option value="5">Size 5 (Standard / Adult)</option>
+              <option value="4">Size 4 (Youth / Futsal)</option>
+              <option value="3">Size 3 (Junior)</option>
+              <option value="1">Size 1 (Mini Skills)</option>
+            </select>
+          </div>
+          <div class="formGroup" style="flex: 1;">
+            <label for="prodSurface">Pitch Surface</label>
+            <select id="prodSurface">
+              <option value="Grass">Grass</option>
+              <option value="Artificial Turf">Artificial Turf</option>
+              <option value="Indoor Court">Indoor Court</option>
+              <option value="All Weather">All Weather</option>
+              <option value="Hard Ground">Hard Ground</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <div class="formGroup" style="flex: 1;">
+            <label for="prodPrice">Price (&pound;) *</label>
+            <input type="number" id="prodPrice" step="0.01" min="0" required placeholder="49.99">
+          </div>
+          <div class="formGroup" style="flex: 1;">
+            <label for="prodStock">Stock Quantity *</label>
+            <input type="number" id="prodStock" min="0" required placeholder="25">
+          </div>
+        </div>
+
+        <div class="formGroup">
+          <label for="prodFifa">FIFA Rating</label>
+          <select id="prodFifa">
+            <option value="FIFA Quality Pro">FIFA Quality Pro</option>
+            <option value="FIFA Quality">FIFA Quality</option>
+            <option value="IMS Approved">IMS Approved</option>
+            <option value="Standard">Standard</option>
+          </select>
+        </div>
+
+        <div class="formGroup">
+          <label for="prodImageUrl">Image URL / Path</label>
+          <input type="text" id="prodImageUrl" placeholder="images/products/my-ball.jpg">
+          <small style="color: var(--text-muted); font-size: 11px;">
+            Recommended size: 500x500 px. Fallback vector graphic will display automatically if image is absent.
+          </small>
+        </div>
+
+        <div class="formGroup">
+          <label for="prodDesc">Product Description</label>
+          <textarea id="prodDesc" rows="3" placeholder="Technical specifications, panel construction, bladder type..."></textarea>
+        </div>
+
+        <div class="formGroup" style="display: flex; align-items: center; gap: 8px;">
+          <input type="checkbox" id="prodFeatured" style="width: auto;">
+          <label for="prodFeatured" style="margin-bottom: 0; cursor: pointer;">Feature on Homepage Showcase</label>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 15px;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('productModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveProductBtn">Save Football</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer class="center" style="margin-top: 40px; padding: 20px 0; color: var(--text-muted); font-size: 13px;">
+    <hr>
+    <p>&copy; 2026 GoalGear Ltd &bull; Administrator Management Portal</p>
+  </footer>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>
