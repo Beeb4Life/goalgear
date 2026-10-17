@@ -86,7 +86,7 @@ async function apiRequest(endpoint, options = {}) {
   const res = await fetch(endpoint, { ...options, headers });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    throw new Error(data.error || 'Server request failed');
+    throw new Error(data.error || `Server HTTP ${res.status}: ${res.statusText || 'request failed'}`);
   }
   return data;
 }

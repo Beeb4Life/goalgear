@@ -21,14 +21,14 @@ app.use(express.urlencoded({ extended: true }));
 // Serve static frontend files (CSS, JS, images, HTML)
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
-// API Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/products', productRoutes);
-app.use('/api/orders', orderRoutes);
-app.use('/api/admin', adminRoutes);
+// API Routes (supports both /api/* and /* if Vercel serverless strips the /api prefix)
+app.use(['/api/auth', '/auth'], authRoutes);
+app.use(['/api/products', '/products'], productRoutes);
+app.use(['/api/orders', '/orders'], orderRoutes);
+app.use(['/api/admin', '/admin'], adminRoutes);
 
 // Health check endpoint
-app.get('/api/health', (req, res) => {
+app.get(['/api/health', '/health'], (req, res) => {
     res.status(200).json({
         status: 'ok',
         app: 'GoalGear - Football Store',
@@ -36,8 +36,8 @@ app.get('/api/health', (req, res) => {
     });
 });
 
-// 404 handler for unmatched API routes
-app.all('/api/*', (req, res) => {
+// JSON 404 handler for unmatched API routes
+app.all('*', (req, res) => {
     res.status(404).json({ error: `API route ${req.method} ${req.originalUrl} not found.` });
 });
 

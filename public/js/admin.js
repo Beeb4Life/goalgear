@@ -86,7 +86,7 @@ async function adminApiRequest(endpoint, options = {}) {
   }
 
   if (!res.ok) {
-    throw new Error(data.error || 'Server error');
+    throw new Error(data.error || `Server HTTP ${res.status}: ${res.statusText || 'error'}`);
   }
 
   return data;
