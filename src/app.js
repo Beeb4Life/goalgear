@@ -1,0 +1,52 @@
+/**
+ * GoalGear - Express Application Setup
+ */
+
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+
+const authRoutes = require('./routes/authRoutes');
+const productRoutes = require('./routes/productRoutes');
+const orderRoutes = require('./routes/orderRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+
+const app = express();
+
+// Middlewares
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Serve static frontend files (CSS, JS, images, HTML)
+app.use(express.static(path.join(__dirname, '..')));
+
+// API Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/admin', adminRoutes);
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+    res.status(200).json({
+        status: 'ok',
+        app: 'GoalGear - Football Store',
+        timestamp: new Date().toISOString()
+    });
+});
+
+// 404 handler for unmatched API routes
+app.all('/api/*', (req, res) => {
+    res.status(404).json({ error: `API route ${req.method} ${req.originalUrl} not found.` });
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+    console.error('[GoalGear Server Error]', err);
+    res.status(err.status || 500).json({
+        error: err.message || 'Internal server error'
+    });
+});
+
+module.exports = app;
