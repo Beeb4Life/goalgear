@@ -19,9 +19,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function getProductFallbackImage(dept) {
-  if (dept === 'Boots') return 'images/products/placeholder-boots.svg';
-  if (dept === 'Socks') return 'images/products/placeholder-socks.svg';
-  return 'images/products/placeholder-ball.svg';
+  if (dept === 'Boots') return 'images/products/adidas-predator-elite.png';
+  if (dept === 'Socks') return 'images/products/goalgear-grip-socks.png';
+  return 'images/products/adidas-ucl-pro.png';
 }
 
 function handleImageFallback(img, fallbackImg) {

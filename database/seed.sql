@@ -205,7 +205,7 @@ INSERT INTO products (
     12.99,
     45,
     'Sweat-wicking Dri-FIT fabric with targeted zonal cushioning underfoot for shock absorption and snug arch band support throughout 90 minutes.',
-    'images/products/nike-squad-socks.jpg',
+    'images/products/nike-squad-socks.png',
     FALSE
 ),
 (
@@ -220,7 +220,7 @@ INSERT INTO products (
     9.99,
     50,
     'Classic knee-high team match socks featuring ribbed cuffs, ankle compression support, and breathable AEROREADY moisture management.',
-    'images/products/adidas-milano-socks.jpg',
+    'images/products/adidas-milano-socks.png',
     FALSE
 ),
 (
@@ -235,7 +235,7 @@ INSERT INTO products (
     16.99,
     35,
     'Hexagonal traction pads across the ball and heel of the foot ensure zero energy loss when changing directions at top match intensity.',
-    'images/products/gte-hexagrip-socks.jpg',
+    'images/products/gte-hexagrip-socks.png',
     FALSE
 );
 

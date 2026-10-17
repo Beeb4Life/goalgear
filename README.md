@@ -33,10 +33,14 @@ ccl_proj/
 │   ├── schema.sql            # PostgreSQL schema (users, products, orders, order_items)
 │   └── seed.sql              # Curated seed catalogue (Footballs, Boots, Socks)
 ├── images/                   # Preserved original assets & site graphics
-│   ├── products/             # Fallback vector graphics & downloaded product images
-│   │   ├── placeholder-ball.svg
-│   │   ├── placeholder-boots.svg
-│   │   └── placeholder-socks.svg
+│   ├── products/             # Authentic product PNG assets (Footballs, Boots, Socks)
+│   │   ├── adidas-ucl-pro.png
+│   │   ├── nike-flight-match.png
+│   │   ├── puma-orbita-pro.png
+│   │   ├── nike-mercurial-vapor.png
+│   │   ├── adidas-predator-elite.png
+│   │   ├── goalgear-grip-socks.png
+│   │   └── ...
 │   ├── Cafe-Owners.png       # (Preserved original asset)
 │   ├── Cake-Vitrine.png      # (Preserved original asset)
 │   └── ...
@@ -74,9 +78,7 @@ ccl_proj/
 
 ## &#128248; Image Dimensions & Replacement Guide
 
-The application comes with built-in SVG vector fallbacks for all three departments (`placeholder-ball.svg`, `placeholder-boots.svg`, `placeholder-socks.svg`), meaning **the website runs completely and cleanly even before you download any images**.
-
-When you download your own pictures, drop them into [`images/products/`](file:///home/ebavain/Desktop/projects/ccl_proj/images/products):
+The application includes authentic PNG product images across all three departments (Footballs, Boots & Shoes, Socks & Grip Gear). All images are stored in [`images/products/`](file:///home/ebavain/Desktop/projects/goalgear/images/products):
 
 | Gear Department | Recommended Size | Aspect Ratio | Destination |
 | :--- | :--- | :--- | :--- |

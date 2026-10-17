@@ -55,14 +55,14 @@ describe('Static Asset & Multi-Page Serving', () => {
         expect(res.headers['content-type']).toContain('javascript');
     });
 
-    it('should serve placeholder SVG ball, boots, and socks with 200 OK', async () => {
-        const ballRes = await request(app).get('/images/products/placeholder-ball.svg');
+    it('should serve product PNG images with 200 OK', async () => {
+        const ballRes = await request(app).get('/images/products/adidas-ucl-pro.png');
         expect(ballRes.status).toBe(200);
 
-        const bootsRes = await request(app).get('/images/products/placeholder-boots.svg');
+        const bootsRes = await request(app).get('/images/products/nike-mercurial-vapor.png');
         expect(bootsRes.status).toBe(200);
 
-        const socksRes = await request(app).get('/images/products/placeholder-socks.svg');
+        const socksRes = await request(app).get('/images/products/goalgear-grip-socks.png');
         expect(socksRes.status).toBe(200);
     });
 });
