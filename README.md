@@ -1,155 +1,107 @@
-# &#9917; GoalGear — Dynamic Football, Boots &amp; Grip Gear Store
+# GoalGear
 
-GoalGear is a dynamic, cloud-ready e-commerce platform dedicated to **authentic footballs, football boots, and performance grip socks**. Originally transformed from a static AWS Academy Café website, GoalGear features a dedicated multi-page layout, dynamic catalogue, multi-attribute filtering by department and brand, live search, customer authentication, persistent shopping cart, simulated demo checkout, customer order tracking, and a protected administrative dashboard with real-time inventory management.
-
----
-
-## &#128736; Technology Stack
-
-- **Frontend**: Responsive semantic HTML5, clean classic CSS3, and modular vanilla ES6+ JavaScript across dedicated pages.
-- **Backend**: Node.js and Express.js REST API.
-- **Database**: Supabase Cloud PostgreSQL with parameterized queries, relational constraints, foreign keys, and indexes.
-- **Authentication & Security**: Server-side password hashing with `bcryptjs`, JSON Web Tokens (JWT), role-based access control (`customer` vs `admin`), zero exposure of service-role keys.
-- **Deployment**: Configured for Vercel Serverless Architecture via `vercel.json`.
-- **Testing**: Automated unit and integration testing suite with `Jest` and `Supertest` (31 passing tests).
+Dynamic e-commerce web application for footballs, football boots, and performance socks. Built with HTML, CSS, Vanilla JavaScript, Node.js, Express, Supabase PostgreSQL, and configured for Vercel deployment.
 
 ---
 
-## &#128193; Project Directory & Page Structure
+## Demo Test Credentials
 
-```text
-ccl_proj/
-├── .env.example              # Documented environment variables template
-├── .gitignore                # Git ignore rules (node_modules, .env, logs)
-├── about.html                # Dedicated About Us & Heritage Page (classic table layout)
-├── admin.html                # Protected Administrator Dashboard & Inventory Portal
-├── api/
-│   └── index.js              # Vercel serverless function entrypoint
-├── catalogue.html            # Dedicated Shopping Catalogue Page (Filters, Grid, Search)
-├── contact.html              # Dedicated Contact & Hours Page (Showroom & Inquiry Form)
-├── css/
-│   └── styles.css            # Classic, clean, and responsive stylesheet
-├── database/
-│   ├── schema.sql            # PostgreSQL schema (users, products, orders, order_items)
-│   └── seed.sql              # Curated seed catalogue (Footballs, Boots, Socks)
-├── images/                   # Preserved original assets & site graphics
-│   ├── products/             # Authentic product PNG assets (Footballs, Boots, Socks)
-│   │   ├── adidas-ucl-pro.png
-│   │   ├── nike-flight-match.png
-│   │   ├── puma-orbita-pro.png
-│   │   ├── nike-mercurial-vapor.png
-│   │   ├── adidas-predator-elite.png
-│   │   ├── goalgear-grip-socks.png
-│   │   └── ...
-│   ├── Cafe-Owners.png       # (Preserved original asset)
-│   ├── Cake-Vitrine.png      # (Preserved original asset)
-│   └── ...
-├── index.html                # Main Home Page (Hero, Departments, Featured Picks)
-├── js/
-│   ├── admin.js              # Admin portal frontend logic (CRUD, inventory, order status)
-│   └── app.js                # Customer storefront logic across separate pages
-├── package.json              # Project dependencies and npm scripts
-├── scripts/
-│   └── create-admin.js       # Secure admin account generation & seeding utility
-├── server.js                 # Express server local entrypoint
-├── src/
-│   ├── app.js                # Express application configuration & routing
-│   ├── config/
-│   │   └── supabase.js       # Supabase client with offline demo/test fallback
-│   ├── controllers/
-│   │   ├── adminController.js   # Admin metrics, CRUD, and order updates
-│   │   ├── authController.js    # Registration, login, and JWT issuance
-│   │   ├── orderController.js   # Checkout, stock deduction, and order history
-│   │   └── productController.js # Dynamic catalogue queries and search
-│   ├── middleware/
-│   │   └── auth.js           # JWT authentication and admin role verification
-│   └── routes/
-│       ├── adminRoutes.js    # Protected /api/admin routes
-│       ├── authRoutes.js     # /api/auth routes
-│       ├── orderRoutes.js    # /api/orders routes
-│       └── productRoutes.js  # /api/products routes
-├── tests/
-│   ├── api.test.js           # Unit & integration tests for API & auth
-│   └── static.test.js        # Multi-page & static asset serving tests
-└── vercel.json               # Vercel deployment configuration
-```
+### Administrator Account
+- Portal URL: `/admin.html`
+- Email: `admin@goalgear.demo`
+- Password: `GoalGearAdmin2026!`
+- Permissions: View metrics, add/edit/delete products, update stock, manage order statuses.
+
+### Customer Account
+- Storefront URL: `/index.html` (Click Sign In)
+- Email: `customer@goalgear.demo`
+- Password: `customer123`
+- Permissions: Browse catalogue, add to cart, place demo orders, view order history.
+
+*(You can also register a new customer account directly from the website).*
 
 ---
 
-## &#128248; Image Dimensions & Replacement Guide
+## Quick Start (Run Locally)
 
-The application includes authentic PNG product images across all three departments (Footballs, Boots & Shoes, Socks & Grip Gear). All images are stored in [`images/products/`](file:///home/ebavain/Desktop/projects/goalgear/images/products):
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-| Gear Department | Recommended Size | Aspect Ratio | Destination |
-| :--- | :--- | :--- | :--- |
-| **Footballs** | **`500 × 500 px`** (or `400 × 400 px`) | 1:1 Square | `images/products/` |
-| **Boots & Shoes** | **`500 × 500 px`** | 1:1 Square | `images/products/` |
-| **Socks & Grip Gear** | **`500 × 500 px`** | 1:1 Square | `images/products/` |
-| **Hero / Header Banner** | **`960 × 300 px`** | Wide Banner | `images/` |
+2. Start the application:
+   ```bash
+   npm start
+   ```
+
+3. Open in your browser:
+   - Storefront: `http://localhost:3000`
+   - Catalogue: `http://localhost:3000/catalogue.html`
+   - About Us: `http://localhost:3000/about.html`
+   - Contact & Hours: `http://localhost:3000/contact.html`
+   - Admin Portal: `http://localhost:3000/admin.html`
 
 ---
 
-## &#128640; Step-by-Step Setup Guide
+## Tester Guide (Feature Verification)
 
-### Step 1: Install Dependencies
-```bash
-npm install
-```
+1. **Browse & Filter Catalogue (`catalogue.html`)**:
+   - Filter by department: Footballs, Boots & Shoes, Socks & Grip Gear.
+   - Use live search and filter by brand, size, surface, or sort order.
+   - Click "Details" on any product to inspect specifications and stock levels.
 
-### Step 2: Supabase Cloud Database Setup (Free)
-1. Go to [https://supabase.com](https://supabase.com) and create a free project (e.g., `goalgear-db`).
-2. Open the **SQL Editor** in the left sidebar of your Supabase dashboard.
-3. Click **New Query**, copy the full content of [`database/schema.sql`](file:///home/ebavain/Desktop/projects/ccl_proj/database/schema.sql), paste it, and click **Run**.
-4. Click **New Query** again, copy [`database/seed.sql`](file:///home/ebavain/Desktop/projects/ccl_proj/database/seed.sql), paste it, and click **Run**.
+2. **Cart & Simulated Checkout**:
+   - Click "Add to Cart" on any product.
+   - Open the Cart modal and adjust quantities or remove items.
+   - Click "Proceed to Demo Checkout", enter test delivery details, and confirm.
+   - Notice: No real payment details or money required. Stock count decreases automatically in the database.
 
-### Step 3: Configure Environment Variables
-1. Copy the example configuration:
+3. **Customer Order History**:
+   - Sign in using the customer credentials above.
+   - Click "My Orders" to inspect the placed order, ordered items, and current fulfillment status.
+
+4. **Admin Dashboard (`admin.html`)**:
+   - Sign in using the administrator credentials.
+   - Review top stat cards: Total Revenue, Total Orders, Product Count, Low Stock Alerts.
+   - Test Product CRUD: Add a new product, edit existing gear, or adjust stock counts inline.
+   - Test Order Fulfillment: Change order status (e.g. Processing -> Shipped -> Delivered).
+
+---
+
+## Database Setup (Supabase Cloud PostgreSQL)
+
+1. Create a free project at [supabase.com](https://supabase.com).
+2. Go to **SQL Editor** in the Supabase dashboard:
+   - Run `database/schema.sql` (creates tables, indexes, and triggers).
+   - Run `database/seed.sql` (inserts products, demo accounts, and sample orders).
+3. Under **Project Settings -> API**, copy:
+   - Project URL
+   - anon key
+   - service_role key
+4. Copy `.env.example` to `.env` and fill in the values:
    ```bash
    cp .env.example .env
    ```
-2. In your Supabase Dashboard under **Project Settings &rarr; API**, copy:
-   - `SUPABASE_URL` = Project URL
-   - `SUPABASE_ANON_KEY` = anon public key
-   - `SUPABASE_SERVICE_ROLE_KEY` = service_role secret key
-
-### Step 4: Create the Initial Admin Account
-Run the secure admin bootstrap script:
-```bash
-node scripts/create-admin.js admin@goalgear.demo GoalGearAdmin2026! "GoalGear Administrator"
-```
-
-### Step 5: Run Locally
-Start the server:
-```bash
-npm start
-```
-Open your browser and navigate between the separate pages:
-- **Home**: [http://localhost:3000](http://localhost:3000)
-- **Product Catalogue**: [http://localhost:3000/catalogue.html](http://localhost:3000/catalogue.html)
-- **About GoalGear**: [http://localhost:3000/about.html](http://localhost:3000/about.html)
-- **Contact & Hours**: [http://localhost:3000/contact.html](http://localhost:3000/contact.html)
-- **Admin Management Portal**: [http://localhost:3000/admin.html](http://localhost:3000/admin.html)
-
-### Step 6: Run Automated Tests
-```bash
-npm test
-```
-All 31 tests will execute and pass.
 
 ---
 
-## &#9729;&#65039; Vercel Online Deployment
+## Deployment (Vercel)
 
-1. Commit and push your code to **GitHub**:
-   ```bash
-   git add .
-   git commit -m "feat: complete GoalGear store"
-   git push origin main
-   ```
-2. Go to [https://vercel.com](https://vercel.com) and import your GitHub repository.
+1. Push this repository to GitHub.
+2. In [vercel.com](https://vercel.com), import the repository.
 3. In **Environment Variables**, add:
    - `SUPABASE_URL`
    - `SUPABASE_SERVICE_ROLE_KEY`
    - `SUPABASE_ANON_KEY`
    - `JWT_SECRET`
-4. Click **Deploy**. Vercel will build and assign you a live, public URL.
+4. Click **Deploy**. Vercel will build the serverless functions and host the static pages.
+
+---
+
+## Security Features
+
+- Password Encryption: Salted one-way hashing with bcryptjs (10 rounds).
+- Access Control: Role-based authorization (`customer` vs `admin`) enforced by server middleware.
+- Session Security: Signed JSON Web Tokens (JWT) for stateless authentication.
+- Injection Defense: Parameterized database queries via the Supabase client.
+- Secret Isolation: Database service-role keys and JWT secrets kept exclusively in environment variables.
