@@ -4,21 +4,23 @@ Dynamic e-commerce web application for footballs, football boots, and performanc
 
 ---
 
-## Demo Test Credentials
+## Accounts & Access Control
+
+### Customer Account
+- Storefront URL: `/index.html` (or click "Register" / "Sign In")
+- Customers can self-register or sign in with their own email and password to track orders.
+- Demo Customer: `customer@goalgear.demo` / `customer123`
 
 ### Administrator Account
 - Portal URL: `/admin.html`
-- Email: `admin@goalgear.demo`
-- Password: `GoalGearAdmin2026!`
 - Permissions: View metrics, add/edit/delete products, update stock, manage order statuses.
-
-### Customer Account
-- Storefront URL: `/index.html` (Click Sign In)
-- Email: `customer@goalgear.demo`
-- Password: `customer123`
-- Permissions: Browse catalogue, add to cart, place demo orders, view order history.
-
-*(You can also register a new customer account directly from the website).*
+- Secure Private Setup: To prevent unauthorized public access, admin credentials are not hardcoded in this public repository. To access the admin portal:
+  1. Register an account with your private email and password on the website.
+  2. In your private Supabase database (`users` table), set that user's `role` to `'admin'`:
+     ```sql
+     UPDATE users SET role = 'admin' WHERE email = 'your-email@example.com';
+     ```
+  3. Sign in at `/admin.html` with your private credentials.
 
 ---
 
