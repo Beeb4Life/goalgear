@@ -22,28 +22,6 @@ Dynamic e-commerce web application for footballs, football boots, and performanc
      ```
   3. Sign in at `/admin.html` with your private credentials.
 
----
-
-## Quick Start (Run Locally)
-
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-2. Start the application:
-   ```bash
-   npm start
-   ```
-
-3. Open in your browser:
-   - Storefront: `http://localhost:3000`
-   - Catalogue: `http://localhost:3000/catalogue.html`
-   - About Us: `http://localhost:3000/about.html`
-   - Contact & Hours: `http://localhost:3000/contact.html`
-   - Admin Portal: `http://localhost:3000/admin.html`
-
----
 
 ## Tester Guide (Feature Verification)
 
@@ -67,36 +45,6 @@ Dynamic e-commerce web application for footballs, football boots, and performanc
    - Review top stat cards: Total Revenue, Total Orders, Product Count, Low Stock Alerts.
    - Test Product CRUD: Add a new product, edit existing gear, or adjust stock counts inline.
    - Test Order Fulfillment: Change order status (e.g. Processing -> Shipped -> Delivered).
-
----
-
-## Database Setup (Supabase Cloud PostgreSQL)
-
-1. Create a free project at [supabase.com](https://supabase.com).
-2. Go to **SQL Editor** in the Supabase dashboard:
-   - Run `database/schema.sql` (creates tables, indexes, and triggers).
-   - Run `database/seed.sql` (inserts products, demo accounts, and sample orders).
-3. Under **Project Settings -> API**, copy:
-   - Project URL
-   - anon key
-   - service_role key
-4. Copy `.env.example` to `.env` and fill in the values:
-   ```bash
-   cp .env.example .env
-   ```
-
----
-
-## Deployment (Vercel)
-
-1. Push this repository to GitHub.
-2. In [vercel.com](https://vercel.com), import the repository.
-3. In **Environment Variables**, add:
-   - `SUPABASE_URL`
-   - `SUPABASE_SERVICE_ROLE_KEY`
-   - `SUPABASE_ANON_KEY`
-   - `JWT_SECRET`
-4. Click **Deploy**. Vercel will build the serverless functions and host the static pages.
 
 ---
 
