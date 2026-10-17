@@ -32,7 +32,7 @@ INSERT INTO products (
     149.99,
     25,
     'Official match ball of the UEFA Champions League knockout rounds. Thermally bonded seamless surface delivers true trajectory, predictable flight, and minimal moisture absorption.',
-    'images/products/adidas-ucl-pro.jpg',
+    'images/products/adidas-ucl-pro.png',
     TRUE
 ),
 (
@@ -47,7 +47,7 @@ INSERT INTO products (
     159.99,
     18,
     'Revolutionary Aerowsculpt molded grooves disrupt airflow across the ball for 30% truer flight and unmatched consistency under top flight competition.',
-    'images/products/nike-flight-match.jpg',
+    'images/products/nike-flight-match.png',
     TRUE
 ),
 (
@@ -62,7 +62,7 @@ INSERT INTO products (
     139.99,
     15,
     'Official match ball of Serie A. Features a 12-panel star configuration with high-frequency molded construction for exceptional touch and shape retention.',
-    'images/products/puma-orbita-pro.jpg',
+    'images/products/puma-orbita-pro.png',
     TRUE
 ),
 (
@@ -77,7 +77,7 @@ INSERT INTO products (
     49.99,
     40,
     'The iconic training and match ball trusted worldwide. Hand-sewn 32-panel design with textured PU synthetic leather and zero-wing latex bladder.',
-    'images/products/select-numero-10.jpg',
+    'images/products/select-numero-10.png',
     TRUE
 ),
 (
@@ -92,7 +92,7 @@ INSERT INTO products (
     64.99,
     22,
     'Top-grade official match futsal ball with a specialized low-rebound butyl bladder for optimum control and precision handling on indoor court surfaces.',
-    'images/products/select-futsal-super.jpg',
+    'images/products/select-futsal-super.png',
     FALSE
 ),
 (
@@ -107,7 +107,7 @@ INSERT INTO products (
     59.99,
     12,
     'Iconic tribute to the classic 1982 World Cup Tango design. Hand-stitched polyurethane leather with latex bladder for a quintessential vintage football feel.',
-    'images/products/adidas-tango-rosario.jpg',
+    'images/products/adidas-tango-rosario.png',
     FALSE
 ),
 
@@ -126,7 +126,7 @@ INSERT INTO products (
     244.99,
     16,
     'Equipped with football-specific 3/4 Zoom Air unit and grippy Vaporposite+ upper for explosive speed and razor-sharp cuts on firm grass pitches.',
-    'images/products/nike-mercurial-vapor.jpg',
+    'images/products/nike-mercurial-vapor.png',
     TRUE
 ),
 (
@@ -141,7 +141,7 @@ INSERT INTO products (
     259.99,
     14,
     'Iconic foldover tongue with elastic strap and precision Strikeskin rubber fins engineered for pin-point curve and clinical finishing power.',
-    'images/products/adidas-predator-elite.jpg',
+    'images/products/adidas-predator-elite.png',
     TRUE
 ),
 (
@@ -156,7 +156,7 @@ INSERT INTO products (
     219.99,
     12,
     'FUZIONFIT360 dual mesh upper with PWRTAPE support locks the foot in place for game-changing agility and creative playmakers on both grass and turf.',
-    'images/products/puma-future-7.jpg',
+    'images/products/puma-future-7.png',
     FALSE
 ),
 (
@@ -171,7 +171,7 @@ INSERT INTO products (
     74.99,
     30,
     'The timeless low-profile indoor football legend. Full-grain leather upper with suede toe overlay and non-marking gum rubber cupsole for maximum hardwood traction.',
-    'images/products/adidas-samba-classic.jpg',
+    'images/products/adidas-samba-classic.png',
     TRUE
 ),
 
@@ -190,7 +190,7 @@ INSERT INTO products (
     14.99,
     60,
     'Engineered with silicone suction grip technology on the sole and heel. Eliminates foot slippage inside boots, preventing blisters and maximizing speed transfer during sprints.',
-    'images/products/goalgear-grip-socks.jpg',
+    'images/products/goalgear-grip-socks.png',
     TRUE
 ),
 (
