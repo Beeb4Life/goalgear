@@ -4,7 +4,7 @@
  * Connects to Supabase PostgreSQL using server-side credentials.
  * If credentials are not yet configured in .env (e.g., initial setup or offline tests),
  * it seamlessly provides an in-memory fallback store initialized with our seed data
- * so all routes and automated tests work reliably.
+ * (Footballs, Boots & Shoes, Socks & Grip Socks) so all routes and automated tests work reliably.
  */
 
 const { createClient } = require('@supabase/supabase-js');
@@ -61,17 +61,20 @@ const inMemoryStore = {
         }
     ],
     products: [
+        // Footballs
         {
             id: 'p-2001',
             name: 'Adidas UCL Pro London Match Ball',
             brand: 'Adidas',
+            department: 'Balls',
             category: 'Match Ball',
             ball_size: 5,
+            size_label: 'Size 5',
             surface: 'Grass',
             fifa_rating: 'FIFA Quality Pro',
             price: 149.99,
             stock_quantity: 25,
-            description: 'The official match ball of the UEFA Champions League knockout stages. Thermally bonded seamless surface provides a predictable trajectory, better touch, and minimal water uptake.',
+            description: 'Official match ball of the UEFA Champions League knockout rounds. Thermally bonded seamless surface delivers true trajectory, predictable flight, and minimal moisture absorption.',
             image_url: 'images/products/adidas-ucl-pro.jpg',
             is_featured: true,
             created_at: new Date().toISOString(),
@@ -81,13 +84,15 @@ const inMemoryStore = {
             id: 'p-2002',
             name: 'Nike Flight Official Match Ball',
             brand: 'Nike',
+            department: 'Balls',
             category: 'Match Ball',
             ball_size: 5,
+            size_label: 'Size 5',
             surface: 'Grass',
             fifa_rating: 'FIFA Quality Pro',
             price: 159.99,
             stock_quantity: 18,
-            description: 'Honed over 8 years and 1,700 hours of testing, Nike Flight revolutionizes consistent ball flight. Molded grooves (Aerowsculpt) disrupt airflow across the ball for 30% truer flight.',
+            description: 'Honed over 8 years and 1,700 hours of testing, Nike Flight revolutionizes consistent ball flight with Aerowsculpt molded grooves.',
             image_url: 'images/products/nike-flight-match.jpg',
             is_featured: true,
             created_at: new Date().toISOString(),
@@ -95,128 +100,146 @@ const inMemoryStore = {
         },
         {
             id: 'p-2003',
-            name: 'Puma Orbita Serie A FIFA Quality Pro',
-            brand: 'Puma',
-            category: 'Match Ball',
-            ball_size: 5,
-            surface: 'Grass',
-            fifa_rating: 'FIFA Quality Pro',
-            price: 139.99,
-            stock_quantity: 15,
-            description: 'Official match ball of top European leagues. Features a 12-panel star configuration with high-frequency molded construction for superior shape retention and soft feel.',
-            image_url: 'images/products/puma-orbita-pro.jpg',
-            is_featured: true,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-        },
-        {
-            id: 'p-2004',
             name: 'Select Numero 10 V23 All-Weather',
             brand: 'Select',
+            department: 'Balls',
             category: 'Training Ball',
             ball_size: 5,
+            size_label: 'Size 5',
             surface: 'All Weather',
             fifa_rating: 'IMS Approved',
             price: 49.99,
             stock_quantity: 40,
-            description: 'The legendary training and match ball used by colleges and clubs worldwide. Hand-sewn 32-panel design with textured PU synthetic leather and zero-wing latex bladder.',
+            description: 'The legendary training and match ball used by colleges and clubs worldwide. Hand-sewn 32-panel design with textured PU synthetic leather.',
             image_url: 'images/products/select-numero-10.jpg',
             is_featured: true,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
         },
         {
-            id: 'p-2005',
-            name: 'Adidas Tiro League Training Ball',
-            brand: 'Adidas',
-            category: 'Training Ball',
-            ball_size: 5,
-            surface: 'Artificial Turf',
-            fifa_rating: 'IMS Approved',
-            price: 34.99,
-            stock_quantity: 55,
-            description: 'Durable, seamless training football engineered for rigorous team training on both grass and artificial turf. Low water absorption and soft polyurethane outer cover.',
-            image_url: 'images/products/adidas-tiro-training.jpg',
-            is_featured: false,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-        },
-        {
-            id: 'p-2006',
-            name: 'Nike Club Elite Team Football',
-            brand: 'Nike',
-            category: 'Training Ball',
-            ball_size: 4,
-            surface: 'All Weather',
-            fifa_rating: 'FIFA Quality',
-            price: 54.99,
-            stock_quantity: 30,
-            description: 'Engineered for junior and youth academy development. Size 4 with textured casing and Nike Aerowsculpt grooves for consistent spin and touch.',
-            image_url: 'images/products/nike-club-elite-sz4.jpg',
-            is_featured: false,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-        },
-        {
-            id: 'p-2007',
+            id: 'p-2004',
             name: 'Select Futsal Super FIFA Pro',
             brand: 'Select',
+            department: 'Balls',
             category: 'Futsal Ball',
             ball_size: 4,
+            size_label: 'Size 4',
             surface: 'Indoor Court',
             fifa_rating: 'FIFA Quality Pro',
             price: 64.99,
             stock_quantity: 22,
-            description: 'Top-grade official match futsal ball with a specialized reduced-rebound butyl bladder for optimum control and precision handling on hardwood and indoor sports surfaces.',
+            description: 'Top-grade official match futsal ball with a specialized low-rebound butyl bladder for optimum control and precision handling on indoor courts.',
             image_url: 'images/products/select-futsal-super.jpg',
+            is_featured: false,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+        },
+        // Boots & Shoes
+        {
+            id: 'p-3001',
+            name: 'Nike Mercurial Vapor 15 Elite FG',
+            brand: 'Nike',
+            department: 'Boots',
+            category: 'Football Boots',
+            ball_size: null,
+            size_label: 'UK 9.0',
+            surface: 'Grass',
+            fifa_rating: 'Elite Pro',
+            price: 244.99,
+            stock_quantity: 16,
+            description: 'Equipped with football-specific 3/4 Zoom Air unit and grippy Vaporposite+ upper for explosive speed and razor-sharp cuts on firm grass pitches.',
+            image_url: 'images/products/nike-mercurial-vapor.jpg',
             is_featured: true,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
         },
         {
-            id: 'p-2008',
-            name: 'Puma Attacanto Futsal Trainer',
-            brand: 'Puma',
-            category: 'Futsal Ball',
-            ball_size: 4,
+            id: 'p-3002',
+            name: 'Adidas Predator Elite Foldover Tongue FG',
+            brand: 'Adidas',
+            department: 'Boots',
+            category: 'Football Boots',
+            ball_size: null,
+            size_label: 'UK 8.5',
+            surface: 'Grass',
+            fifa_rating: 'Elite Pro',
+            price: 259.99,
+            stock_quantity: 14,
+            description: 'Iconic foldover tongue with elastic strap and precision Strikeskin rubber fins engineered for pin-point curve and clinical finishing power.',
+            image_url: 'images/products/adidas-predator-elite.jpg',
+            is_featured: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+        },
+        {
+            id: 'p-3003',
+            name: 'Adidas Samba Classic Leather Indoor Shoes',
+            brand: 'Adidas',
+            department: 'Boots',
+            category: 'Turf / Futsal Shoes',
+            ball_size: null,
+            size_label: 'UK 9.0',
             surface: 'Indoor Court',
+            fifa_rating: 'Classic Club',
+            price: 74.99,
+            stock_quantity: 30,
+            description: 'The timeless low-profile indoor football legend. Full-grain leather upper with suede toe overlay and non-marking gum rubber cupsole for maximum traction.',
+            image_url: 'images/products/adidas-samba-classic.jpg',
+            is_featured: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+        },
+        // Socks & Grip Socks
+        {
+            id: 'p-4001',
+            name: 'GoalGear Anti-Slip Pro Grip Socks',
+            brand: 'GoalGear',
+            department: 'Socks',
+            category: 'Grip Socks',
+            ball_size: null,
+            size_label: 'M (UK 6-9)',
+            surface: 'All Weather',
+            fifa_rating: 'Pro Grade',
+            price: 14.99,
+            stock_quantity: 60,
+            description: 'Engineered with silicone suction grip technology on the sole and heel. Eliminates foot slippage inside boots, preventing blisters and maximizing speed transfer.',
+            image_url: 'images/products/goalgear-grip-socks.jpg',
+            is_featured: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+        },
+        {
+            id: 'p-4002',
+            name: 'Nike Squad Crew Over-Calf Football Socks',
+            brand: 'Nike',
+            department: 'Socks',
+            category: 'Crew Socks',
+            ball_size: null,
+            size_label: 'L (UK 8-11)',
+            surface: 'All Weather',
             fifa_rating: 'Standard',
-            price: 29.99,
-            stock_quantity: 35,
-            description: 'Value-driven low-bounce futsal football built for intense 5-a-side practice sessions, court pickup matches, and fast-paced indoor footwork drills.',
-            image_url: 'images/products/puma-attacanto-futsal.jpg',
+            price: 12.99,
+            stock_quantity: 45,
+            description: 'Sweat-wicking Dri-FIT fabric with targeted zonal cushioning underfoot for shock absorption and snug arch band support throughout 90 minutes.',
+            image_url: 'images/products/nike-squad-socks.jpg',
             is_featured: false,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
         },
         {
-            id: 'p-2009',
-            name: 'Adidas Tango 1982 Rosario Heritage Ball',
-            brand: 'Adidas',
-            category: 'Retro/Heritage',
-            ball_size: 5,
-            surface: 'Grass',
-            fifa_rating: 'IMS Approved',
-            price: 59.99,
-            stock_quantity: 12,
-            description: 'Iconic tribute to the classic 1982 World Cup Tango design. Hand-stitched polyurethane leather with latex bladder for the quintessential vintage football aesthetic and feel.',
-            image_url: 'images/products/adidas-tango-rosario.jpg',
-            is_featured: true,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-        },
-        {
-            id: 'p-2010',
-            name: 'Nike Skills Mini Football Size 1',
-            brand: 'Nike',
-            category: 'Mini Ball',
-            ball_size: 1,
+            id: 'p-4003',
+            name: 'Gain The Edge HexaGrip Performance Socks',
+            brand: 'Gain The Edge',
+            department: 'Socks',
+            category: 'Grip Socks',
+            ball_size: null,
+            size_label: 'One Size',
             surface: 'All Weather',
-            fifa_rating: 'Standard',
-            price: 14.99,
-            stock_quantity: 50,
-            description: 'Size 1 mini skills ball ideal for footwork agility, ball control training, freestyle practice, or display for football enthusiasts of all ages.',
-            image_url: 'images/products/nike-skills-mini-sz1.jpg',
+            fifa_rating: 'Pro Grade',
+            price: 16.99,
+            stock_quantity: 35,
+            description: 'Hexagonal traction pads across the ball and heel of the foot ensure zero energy loss when changing directions at top match intensity.',
+            image_url: 'images/products/gte-hexagrip-socks.jpg',
             is_featured: false,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
@@ -248,7 +271,8 @@ const inMemoryStore = {
             product_id: 'p-2001',
             product_name: 'Adidas UCL Pro London Match Ball',
             product_brand: 'Adidas',
-            ball_size: 5,
+            product_department: 'Balls',
+            size_label: 'Size 5',
             quantity: 1,
             unit_price: 149.99,
             subtotal: 149.99,
@@ -318,7 +342,6 @@ function createMockClient() {
                     if (limitCount !== null) {
                         results = results.slice(0, limitCount);
                     }
-                    // Return cloned copies to prevent accidental reference mutation
                     resolve({ data: JSON.parse(JSON.stringify(results)), error: null });
                 },
                 insert: (rows) => {
@@ -379,7 +402,6 @@ function createMockClient() {
                     return {
                         eq: (col, val) => ({
                             then: (resolve) => {
-                                const initialLen = collection.length;
                                 for (let i = collection.length - 1; i >= 0; i--) {
                                     if (collection[i][col] === val) {
                                         collection.splice(i, 1);
@@ -401,5 +423,5 @@ const mockClient = createMockClient();
 module.exports = {
     getDb: () => supabaseClient || mockClient,
     isUsingMock: () => !supabaseClient,
-    inMemoryStore // Exported for testing assertions
+    inMemoryStore
 };

@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bootShade" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="70%" stop-color="#e9ecef"/>
+      <stop offset="100%" stop-color="#adb5bd"/>
+    </radialGradient>
+    <filter id="bootShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000000" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <rect width="400" height="400" fill="#f8f9fa"/>
+
+  <!-- Football Boot Silhouette -->
+  <g filter="url(#bootShadow)">
+    <!-- Sole & Studs -->
+    <path d="M 60 270 Q 140 278 240 272 Q 310 270 340 250 L 335 258 Q 300 282 230 284 Q 130 286 60 276 Z" fill="#212529"/>
+    <!-- Studs -->
+    <rect x="75" y="275" width="14" height="18" rx="3" fill="#1b4332"/>
+    <rect x="110" y="277" width="14" height="18" rx="3" fill="#1b4332"/>
+    <rect x="250" y="275" width="14" height="18" rx="3" fill="#1b4332"/>
+    <rect x="285" y="272" width="14" height="18" rx="3" fill="#1b4332"/>
+    <rect x="315" y="260" width="12" height="16" rx="3" fill="#1b4332"/>
+
+    <!-- Upper Body -->
+    <path d="M 60 270 C 60 220 85 180 130 170 C 150 165 170 175 190 205 C 220 215 270 230 330 235 C 345 240 345 248 335 258 C 290 275 220 278 60 270 Z" fill="url(#bootShade)" stroke="#212529" stroke-width="4"/>
+
+    <!-- Ankle Collar / Sock Liner -->
+    <path d="M 115 174 C 110 145 130 135 155 135 C 175 135 180 150 175 185 Z" fill="#1b4332" stroke="#212529" stroke-width="3"/>
+
+    <!-- Swoosh / Speed Stripes -->
+    <path d="M 130 225 Q 190 220 270 248 Q 200 238 150 250 Z" fill="#212529"/>
+    <path d="M 140 215 Q 185 212 245 235 Q 190 228 155 238 Z" fill="#52b788"/>
+
+    <!-- Laces / Grip Texture -->
+    <line x1="165" y1="180" x2="190" y2="195" stroke="#212529" stroke-width="3"/>
+    <line x1="180" y1="192" x2="205" y2="207" stroke="#212529" stroke-width="3"/>
+    <line x1="195" y1="204" x2="220" y2="219" stroke="#212529" stroke-width="3"/>
+  </g>
+
+  <!-- Watermark Badge -->
+  <rect x="130" y="340" width="140" height="26" rx="6" fill="#1b4332" opacity="0.9"/>
+  <text x="200" y="357" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">GOALGEAR BOOTS</text>
+</svg>

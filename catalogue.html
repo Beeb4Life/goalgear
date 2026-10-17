@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GoalGear — Product Catalogue</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body class="bodyStyle">
+
+  <!-- ================================================================
+       1. Main Header & Top Navigation
+       ================================================================ -->
+  <header id="header" class="mainHeader">
+    <div class="brandTitle">&#9917; GoalGear</div>
+    <div class="brandTagline">Footballs, Boots &amp; Grip Gear &bull; Precision on Every Pitch</div>
+  </header>
+
+  <nav class="topNavBar">
+    <div class="navLinks">
+      <a href="index.html">Home</a>
+      <a href="catalogue.html" class="activeLink" style="color: var(--primary-color); border-bottom: 2px solid var(--primary-color);">Product Catalogue</a>
+      <a href="about.html">About GoalGear</a>
+      <a href="contact.html">Contact &amp; Hours</a>
+    </div>
+
+    <div class="navActions">
+      <div id="userNavSection"></div>
+      <button class="btn btn-primary" onclick="openCartModal()">
+        &#128722; Cart (<span id="cartCountBadge">0</span>)
+      </button>
+    </div>
+  </nav>
+
+  <!-- ================================================================
+       2. Catalogue Header & Department Selector
+       ================================================================ -->
+  <section style="margin: 20px 0;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+      <div>
+        <h2 style="margin: 0; color: var(--primary-color);">Product Catalogue</h2>
+        <span id="catalogueCount" style="color: var(--text-muted); font-size: 13px;">Loading football gear...</span>
+      </div>
+      <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+        <a href="catalogue.html" class="btn btn-secondary btn-sm">All Gear</a>
+        <a href="catalogue.html?department=Balls" class="btn btn-secondary btn-sm">&#9917; Footballs</a>
+        <a href="catalogue.html?department=Boots" class="btn btn-secondary btn-sm">&#128095; Boots &amp; Shoes</a>
+        <a href="catalogue.html?department=Socks" class="btn btn-secondary btn-sm">&#129506; Socks &amp; Grip Gear</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       3. Filter & Search Toolbar
+       ================================================================ -->
+  <div class="searchToolbar">
+    <div class="filterControls">
+      <input type="text" id="searchInput" placeholder="Search gear by name, brand, or model...">
+
+      <select id="filterDepartment">
+        <option value="">All Departments</option>
+      </select>
+
+      <select id="filterCategory">
+        <option value="">All Categories</option>
+      </select>
+
+      <select id="filterBrand">
+        <option value="">All Brands</option>
+      </select>
+
+      <select id="filterSize">
+        <option value="">All Sizes</option>
+      </select>
+
+      <select id="filterSurface">
+        <option value="">All Surfaces</option>
+      </select>
+
+      <select id="filterSort">
+        <option value="newest">Sort: Newest First</option>
+        <option value="price-asc">Price: Low to High</option>
+        <option value="price-desc">Price: High to Low</option>
+        <option value="name-asc">Alphabetical (A-Z)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- ================================================================
+       4. Product Grid
+       ================================================================ -->
+  <div id="catalogueGrid" class="productGrid">
+    <!-- Dynamically loaded via js/app.js -->
+  </div>
+
+  <!-- ================================================================
+       5. Footer
+       ================================================================ -->
+  <footer id="Copyright" class="center" style="margin-top: 40px; padding: 20px 0; color: var(--text-muted); font-size: 13px;">
+    <hr>
+    <p>&copy; 2026 GoalGear Ltd. Footballs, Football Boots &amp; Performance Socks.</p>
+    <p>
+      <a href="admin.html" style="color: var(--text-muted); text-decoration: none;">Staff &amp; Admin Portal</a>
+    </p>
+  </footer>
+
+  <!-- ================================================================
+       6. Modals
+       ================================================================ -->
+  <div id="productDetailModal" class="modalOverlay">
+    <div class="modalContent" style="max-width: 650px;">
+      <div class="modalHeader">
+        <h3>Gear Specifications</h3>
+        <button class="closeModalBtn" onclick="closeModal('productDetailModal')">&times;</button>
+      </div>
+      <div id="productDetailContent"></div>
+    </div>
+  </div>
+
+  <div id="cartModal" class="modalOverlay">
+    <div class="modalContent" style="max-width: 650px;">
+      <div class="modalHeader">
+        <h3>Your Shopping Cart</h3>
+        <button class="closeModalBtn" onclick="closeModal('cartModal')">&times;</button>
+      </div>
+      <div id="cartItemsContainer"></div>
+      <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 14px; margin-top: 14px;">
+        <div>
+          <span style="color: var(--text-muted); font-size: 13px;">Order Subtotal:</span><br>
+          <strong id="cartTotalDisplay" style="font-size: 20px; color: var(--primary-color);">&pound;0.00</strong>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-secondary" onclick="closeModal('cartModal')">Continue Shopping</button>
+          <button id="proceedCheckoutBtn" class="btn btn-primary" onclick="openCheckoutModal()">Proceed to Demo Checkout</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="checkoutModal" class="modalOverlay">
+    <div class="modalContent" style="max-width: 540px;">
+      <div class="modalHeader">
+        <h3>Demo Order Checkout</h3>
+        <button class="closeModalBtn" onclick="closeModal('checkoutModal')">&times;</button>
+      </div>
+      <div id="checkoutContentArea">
+        <div id="checkoutAlert" class="alertBox alertError" style="display: none;"></div>
+        <div id="checkoutOrderSummary"></div>
+
+        <form id="checkoutForm">
+          <div class="formGroup">
+            <label for="checkoutName">Full Name *</label>
+            <input type="text" id="checkoutName" required placeholder="e.g. Alex Striker">
+          </div>
+          <div class="formGroup">
+            <label for="checkoutEmail">Email Address (for order confirmation) *</label>
+            <input type="email" id="checkoutEmail" required placeholder="e.g. striker@goalgear.demo">
+          </div>
+          <div class="formGroup">
+            <label for="checkoutAddress">Delivery Address *</label>
+            <input type="text" id="checkoutAddress" required placeholder="e.g. 10 Wembley Way">
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <div class="formGroup" style="flex: 1;">
+              <label for="checkoutCity">City *</label>
+              <input type="text" id="checkoutCity" required placeholder="e.g. London">
+            </div>
+            <div class="formGroup" style="flex: 1;">
+              <label for="checkoutPostal">Postal Code *</label>
+              <input type="text" id="checkoutPostal" required placeholder="e.g. HA9 0WS">
+            </div>
+          </div>
+          <div class="formGroup">
+            <label for="checkoutCountry">Country</label>
+            <input type="text" id="checkoutCountry" value="United Kingdom" required>
+          </div>
+
+          <div style="background-color: #fff3cd; border: 1px solid #ffeeba; border-radius: 4px; padding: 10px; font-size: 12px; margin-bottom: 15px; color: #856404;">
+            <strong>Demo Checkout:</strong> No real payment card or banking information is requested. Clicking "Confirm Demo Order" decrements live inventory in Supabase without charging real money.
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 8px;">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('checkoutModal')">Cancel</button>
+            <button type="submit" id="submitOrderBtn" class="btn btn-primary">Confirm &amp; Place Demo Order</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="authModal" class="modalOverlay">
+    <div class="modalContent" style="max-width: 420px;">
+      <div class="modalHeader">
+        <h3 id="authModalTitle">Customer Access</h3>
+        <button class="closeModalBtn" onclick="closeModal('authModal')">&times;</button>
+      </div>
+
+      <div id="authAlert" class="alertBox" style="display: none;"></div>
+
+      <form id="loginForm">
+        <div class="formGroup">
+          <label for="loginEmail">Email Address</label>
+          <input type="email" id="loginEmail" required placeholder="e.g. customer@goalgear.demo">
+        </div>
+        <div class="formGroup">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" required placeholder="Your password">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 6px;">Sign In</button>
+        <p class="center" style="font-size: 13px; margin-top: 14px;">
+          Don't have an account? 
+          <a href="#" onclick="openAuthModal('register'); return false;" style="color: var(--primary-color); font-weight: bold;">Create one</a>
+        </p>
+      </form>
+
+      <form id="registerForm" style="display: none;">
+        <div class="formGroup">
+          <label for="regName">Full Name</label>
+          <input type="text" id="regName" required placeholder="e.g. Alex Striker">
+        </div>
+        <div class="formGroup">
+          <label for="regEmail">Email Address</label>
+          <input type="email" id="regEmail" required placeholder="e.g. striker@goalgear.demo">
+        </div>
+        <div class="formGroup">
+          <label for="regPassword">Password (Min 6 characters)</label>
+          <input type="password" id="regPassword" required minlength="6" placeholder="Choose a secure password">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 6px;">Register Account</button>
+        <p class="center" style="font-size: 13px; margin-top: 14px;">
+          Already have an account? 
+          <a href="#" onclick="openAuthModal('login'); return false;" style="color: var(--primary-color); font-weight: bold;">Sign In</a>
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <div id="orderHistoryModal" class="modalOverlay">
+    <div class="modalContent" style="max-width: 650px;">
+      <div class="modalHeader">
+        <h3>My Orders</h3>
+        <button class="closeModalBtn" onclick="closeModal('orderHistoryModal')">&times;</button>
+      </div>
+      <div id="orderHistoryContainer"></div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

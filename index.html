@@ -3,26 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GoalGear — Dynamic Football Store</title>
+  <title>GoalGear — Home</title>
   <link rel="stylesheet" href="css/styles.css">
 </head>
 
 <body class="bodyStyle">
 
   <!-- ================================================================
-       1. Main Header & Top Navigation
+       1. Main Header & Top Navigation (Separate Pages)
        ================================================================ -->
   <header id="header" class="mainHeader">
     <div class="brandTitle">&#9917; GoalGear</div>
-    <div class="brandTagline">Authentic Footballs &amp; Soccer Balls Only &bull; Precision on Every Pitch</div>
+    <div class="brandTagline">Footballs, Elite Boots &amp; Grip Socks &bull; Precision on Every Pitch</div>
   </header>
 
   <nav class="topNavBar">
     <div class="navLinks">
-      <a href="#featuredSection">Featured Balls</a>
-      <a href="#catalogueSection">Catalogue</a>
-      <a href="#aboutUs">About GoalGear</a>
-      <a href="#contactUs">Contact &amp; Hours</a>
+      <a href="index.html" class="activeLink" style="color: var(--primary-color); border-bottom: 2px solid var(--primary-color);">Home</a>
+      <a href="catalogue.html">Product Catalogue</a>
+      <a href="about.html">About GoalGear</a>
+      <a href="contact.html">Contact &amp; Hours</a>
     </div>
 
     <div class="navActions">
@@ -39,167 +39,135 @@
        2. Hero Banner & Demo Mode Notice
        ================================================================ -->
   <section class="heroBanner">
-    <h2>Official Match Balls, Training Gear &amp; Vintage Classics</h2>
+    <h2>Official Match Balls, Elite Football Boots &amp; Grip Gear</h2>
     <p>
-      From FIFA Quality Pro tournament balls to durable hand-stitched training spheres and low-bounce futsal balls.
-      Select your size, brand, and preferred pitch surface.
+      Discover premium football equipment engineered for matchday excellence. Whether you need FIFA Quality Pro balls, explosive speed boots, or anti-slip grip socks, we have you equipped.
     </p>
-    <div class="demoBadgeNotice">
-      &#9888; Demo Mode Active: Live Supabase database simulation. No real money or payment is charged for orders.
+    <div style="margin-top: 15px;">
+      <a href="catalogue.html" class="btn btn-primary" style="padding: 10px 20px; font-size: 15px;">
+        Browse Full Catalogue &rarr;
+      </a>
+    </div>
+    <div class="demoBadgeNotice" style="margin-top: 15px;">
+      &#9888; Demo Mode Active: Live Supabase database simulation. No real money is charged for purchases.
     </div>
   </section>
 
   <!-- ================================================================
-       3. Featured Footballs Section
+       3. Shop by Department Quick Cards
        ================================================================ -->
-  <section id="featuredSection">
+  <section style="margin: 25px 0;">
     <hr>
-    <div class="cursiveText">Featured Selections — Handpicked by Match Specialists</div>
+    <div class="cursiveText">Shop by Department</div>
+    <table class="classicTableGrid">
+      <tr>
+        <td style="width: 33.3%; background-color: #f8f9fa; text-align: center;">
+          <div class="productImageWrap" style="height: 140px; margin: 0 auto 10px auto; max-width: 140px;">
+            <img src="images/products/placeholder-ball.svg" alt="Footballs">
+          </div>
+          <h3 style="margin: 6px 0; color: var(--primary-color);">&#9917; Footballs</h3>
+          <p style="font-size: 13px; color: var(--text-muted); margin: 4px 0 10px 0;">
+            Match balls, training spheres, futsal &amp; retro classics.
+          </p>
+          <a href="catalogue.html?department=Balls" class="btn btn-secondary btn-sm">Explore Balls &rarr;</a>
+        </td>
+
+        <td style="width: 33.3%; background-color: #f8f9fa; text-align: center;">
+          <div class="productImageWrap" style="height: 140px; margin: 0 auto 10px auto; max-width: 140px;">
+            <img src="images/products/placeholder-boots.svg" alt="Football Boots">
+          </div>
+          <h3 style="margin: 6px 0; color: var(--primary-color);">&#128095; Boots &amp; Shoes</h3>
+          <p style="font-size: 13px; color: var(--text-muted); margin: 4px 0 10px 0;">
+            Firm ground cleats, artificial turf &amp; indoor court shoes.
+          </p>
+          <a href="catalogue.html?department=Boots" class="btn btn-secondary btn-sm">Explore Boots &rarr;</a>
+        </td>
+
+        <td style="width: 33.3%; background-color: #f8f9fa; text-align: center;">
+          <div class="productImageWrap" style="height: 140px; margin: 0 auto 10px auto; max-width: 140px;">
+            <img src="images/products/placeholder-socks.svg" alt="Football Socks">
+          </div>
+          <h3 style="margin: 6px 0; color: var(--primary-color);">&#129506; Socks &amp; Grip Gear</h3>
+          <p style="font-size: 13px; color: var(--text-muted); margin: 4px 0 10px 0;">
+            Anti-slip suction grip socks &amp; breathable team socks.
+          </p>
+          <a href="catalogue.html?department=Socks" class="btn btn-secondary btn-sm">Explore Socks &rarr;</a>
+        </td>
+      </tr>
+    </table>
+  </section>
+
+  <!-- ================================================================
+       4. Featured Picks Showcase
+       ================================================================ -->
+  <section id="featuredSection" style="margin-top: 30px;">
+    <hr>
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+      <div class="cursiveText" style="margin: 0;">Featured Picks — Curated Match Gear</div>
+      <a href="catalogue.html" style="font-size: 13px; font-weight: bold; color: var(--primary-color);">View All Products &rarr;</a>
+    </div>
     <div id="featuredGrid" class="productGrid">
       <!-- Dynamically populated by js/app.js -->
     </div>
   </section>
 
   <!-- ================================================================
-       4. Dynamic Football Catalogue & Filters
+       5. Store Story Preview & Quick Links
        ================================================================ -->
-  <section id="catalogueSection" style="margin-top: 30px;">
+  <section style="margin-top: 40px;">
     <hr>
-    <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
-      <h2 style="margin: 0; color: var(--primary-color);">Product Catalogue</h2>
-      <span id="catalogueCount" style="color: var(--text-muted); font-size: 13px;">Loading footballs...</span>
-    </div>
-
-    <!-- Filter and Search Toolbar -->
-    <div class="searchToolbar">
-      <div class="filterControls">
-        <input type="text" id="searchInput" placeholder="Search football name, brand, or model...">
-        
-        <select id="filterCategory">
-          <option value="">All Categories</option>
-        </select>
-
-        <select id="filterBrand">
-          <option value="">All Brands</option>
-        </select>
-
-        <select id="filterSize">
-          <option value="">All Sizes</option>
-        </select>
-
-        <select id="filterSurface">
-          <option value="">All Surfaces</option>
-        </select>
-
-        <select id="filterSort">
-          <option value="newest">Sort: Newest First</option>
-          <option value="price-asc">Price: Low to High</option>
-          <option value="price-desc">Price: High to Low</option>
-          <option value="name-asc">Alphabetical (A-Z)</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- Catalogue Grid -->
-    <div id="catalogueGrid" class="productGrid">
-      <!-- Dynamically populated by js/app.js -->
-    </div>
-  </section>
-
-  <!-- ================================================================
-       5. Classic Information & About Us (Preserving Café Structure)
-       ================================================================ -->
-  <section id="aboutUs" class="center" style="margin-top: 40px;">
-    <hr>
-    <h2>About GoalGear</h2>
     <table class="classicTableGrid">
       <tr>
-        <td style="width: 40%; background-color: #f8f9fa;">
-          <div class="productImageWrap" style="height: 220px; background: none; margin: 0;">
-            <img src="images/products/placeholder-ball.svg" alt="GoalGear Craftsmanship" style="max-height: 200px;">
-          </div>
+        <td style="background-color: #e8f5e9; width: 50%;">
+          <div class="cursiveText">The GoalGear Commitment</div>
+          <p>
+            Founded by footballers for footballers. Every match ball, boot model, and grip sock in our store undergoes strict quality, traction, and durability inspection.
+          </p>
+          <a href="about.html" class="btn btn-secondary btn-sm">Read Our Full Story &rarr;</a>
         </td>
-        <td style="text-align: left;">
-          <div class="cursiveText">Supplying Footballers &amp; Academies Since 2016</div>
+        <td style="background-color: #fff3cd; width: 50%;">
+          <div class="cursiveText">London Demo Centre &amp; Orders</div>
           <p>
-            GoalGear was founded by lifelong football enthusiasts dedicated exclusively to the most important piece of equipment in the game: the football.
-            Whether you are competing under stadium floodlights, running youth academy drills on artificial turf, or playing 5-a-side on indoor courts, we curate verified, pressure-tested footballs from Adidas, Nike, Puma, Select, and legendary heritage manufacturers.
+            123 Football Way, Stadium Quarter, London SW1A 0AA.<br>
+            Open 7 days a week for ball pressure checks and boots sizing consultations.
           </p>
-          <p>
-            Every model in our catalogue is rigorously inspected for circumference consistency, sphericity, water absorption, and panel seam bonding.
-          </p>
+          <a href="contact.html" class="btn btn-secondary btn-sm">Store Hours &amp; Directions &rarr;</a>
         </td>
       </tr>
     </table>
   </section>
 
   <!-- ================================================================
-       6. Contact Us & Store Hours
-       ================================================================ -->
-  <section id="contactUs" class="center" style="margin-top: 20px;">
-    <hr>
-    <h2>Contact &amp; Pitch Gear Headquarters</h2>
-    <table class="classicTableGrid">
-      <tr>
-        <td style="background-color: #e8f5e9;">
-          <div class="cursiveText">Store &amp; Demo Centre</div>
-          <p>
-            123 Football Way, Stadium Quarter<br>
-            London SW1A 0AA, United Kingdom<br>
-            <strong>Direct Line:</strong> +44-20-7946-0920<br>
-            <strong>Email:</strong> support@goalgear.demo
-          </p>
-        </td>
-        <td style="background-color: #fff3cd;">
-          <div class="cursiveText">Demo Centre Hours</div>
-          <p>
-            Monday &ndash; Friday: 8:00am &ndash; 7:00pm<br>
-            Saturday (Matchday): 8:00am &ndash; 8:00pm<br>
-            Sunday: 10:00am &ndash; 4:00pm
-          </p>
-        </td>
-      </tr>
-    </table>
-  </section>
-
-  <!-- ================================================================
-       7. Footer & Copyright
+       6. Footer
        ================================================================ -->
   <footer id="Copyright" class="center" style="margin-top: 30px; padding: 20px 0; color: var(--text-muted); font-size: 13px;">
     <hr>
-    <p>&copy; 2026 GoalGear Ltd. All rights reserved. Sells authentic football/soccer balls only.</p>
+    <p>&copy; 2026 GoalGear Ltd. Footballs, Football Boots &amp; Performance Socks.</p>
     <p>
       <a href="admin.html" style="color: var(--text-muted); text-decoration: none;">Staff &amp; Admin Portal</a>
     </p>
   </footer>
 
   <!-- ================================================================
-       8. Modals
+       7. Modals (Detail, Cart, Checkout, Auth, Orders)
        ================================================================ -->
-
-  <!-- Product Details Modal -->
   <div id="productDetailModal" class="modalOverlay">
     <div class="modalContent" style="max-width: 650px;">
       <div class="modalHeader">
-        <h3>Football Specifications</h3>
+        <h3>Gear Specifications</h3>
         <button class="closeModalBtn" onclick="closeModal('productDetailModal')">&times;</button>
       </div>
-      <div id="productDetailContent">
-        <!-- Injected by js/app.js -->
-      </div>
+      <div id="productDetailContent"></div>
     </div>
   </div>
 
-  <!-- Shopping Cart Modal -->
   <div id="cartModal" class="modalOverlay">
     <div class="modalContent" style="max-width: 650px;">
       <div class="modalHeader">
         <h3>Your Shopping Cart</h3>
         <button class="closeModalBtn" onclick="closeModal('cartModal')">&times;</button>
       </div>
-      <div id="cartItemsContainer">
-        <!-- Injected by js/app.js -->
-      </div>
+      <div id="cartItemsContainer"></div>
       <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 14px; margin-top: 14px;">
         <div>
           <span style="color: var(--text-muted); font-size: 13px;">Order Subtotal:</span><br>
@@ -213,7 +181,6 @@
     </div>
   </div>
 
-  <!-- Checkout Modal -->
   <div id="checkoutModal" class="modalOverlay">
     <div class="modalContent" style="max-width: 540px;">
       <div class="modalHeader">
@@ -253,7 +220,7 @@
           </div>
 
           <div style="background-color: #fff3cd; border: 1px solid #ffeeba; border-radius: 4px; padding: 10px; font-size: 12px; margin-bottom: 15px; color: #856404;">
-            <strong>Demo Checkout:</strong> No real payment card or banking information is requested. Clicking "Confirm Demo Order" will decrement live inventory and create your order in the database.
+            <strong>Demo Checkout:</strong> No real payment card or banking information is requested. Clicking "Confirm Demo Order" decrements live inventory in Supabase without charging real money.
           </div>
 
           <div style="display: flex; justify-content: flex-end; gap: 8px;">
@@ -265,7 +232,6 @@
     </div>
   </div>
 
-  <!-- Customer Auth Modal (Login / Register) -->
   <div id="authModal" class="modalOverlay">
     <div class="modalContent" style="max-width: 420px;">
       <div class="modalHeader">
@@ -275,7 +241,6 @@
 
       <div id="authAlert" class="alertBox" style="display: none;"></div>
 
-      <!-- Login Form -->
       <form id="loginForm">
         <div class="formGroup">
           <label for="loginEmail">Email Address</label>
@@ -292,7 +257,6 @@
         </p>
       </form>
 
-      <!-- Register Form -->
       <form id="registerForm" style="display: none;">
         <div class="formGroup">
           <label for="regName">Full Name</label>
@@ -315,20 +279,16 @@
     </div>
   </div>
 
-  <!-- Customer Order History Modal -->
   <div id="orderHistoryModal" class="modalOverlay">
     <div class="modalContent" style="max-width: 650px;">
       <div class="modalHeader">
-        <h3>My Football Orders</h3>
+        <h3>My Orders</h3>
         <button class="closeModalBtn" onclick="closeModal('orderHistoryModal')">&times;</button>
       </div>
-      <div id="orderHistoryContainer">
-        <!-- Populated dynamically by js/app.js -->
-      </div>
+      <div id="orderHistoryContainer"></div>
     </div>
   </div>
 
-  <!-- Storefront Client Script -->
   <script src="js/app.js"></script>
 </body>
 </html>

@@ -2,7 +2,8 @@
  * GoalGear - Comprehensive API Test Suite
  *
  * Tests all core routes, authentication, order placement,
- * inventory updates, and role-based access control.
+ * inventory updates, and role-based access control across
+ * Footballs, Football Boots, and Socks.
  */
 
 const request = require('supertest');
@@ -118,10 +119,10 @@ describe('GoalGear API Test Suite', () => {
     });
 
     // ================================================================
-    // 3. Products Catalogue API
+    // 3. Products Catalogue API (Balls, Boots, Socks)
     // ================================================================
     describe('Products Endpoints', () => {
-        it('should list all footballs', async () => {
+        it('should list all football gear', async () => {
             const res = await request(app).get('/api/products');
             expect(res.status).toBe(200);
             expect(Array.isArray(res.body.products)).toBe(true);
@@ -130,7 +131,25 @@ describe('GoalGear API Test Suite', () => {
             testProductId = res.body.products[0].id;
         });
 
-        it('should filter footballs by category', async () => {
+        it('should filter gear by department (Boots)', async () => {
+            const res = await request(app).get('/api/products?department=Boots');
+            expect(res.status).toBe(200);
+            expect(res.body.products.length).toBeGreaterThan(0);
+            res.body.products.forEach((p) => {
+                expect(p.department).toBe('Boots');
+            });
+        });
+
+        it('should filter gear by department (Socks)', async () => {
+            const res = await request(app).get('/api/products?department=Socks');
+            expect(res.status).toBe(200);
+            expect(res.body.products.length).toBeGreaterThan(0);
+            res.body.products.forEach((p) => {
+                expect(p.department).toBe('Socks');
+            });
+        });
+
+        it('should filter gear by category', async () => {
             const res = await request(app).get('/api/products?category=Match%20Ball');
             expect(res.status).toBe(200);
             res.body.products.forEach((p) => {
@@ -138,7 +157,7 @@ describe('GoalGear API Test Suite', () => {
             });
         });
 
-        it('should search footballs by keyword', async () => {
+        it('should search gear by keyword', async () => {
             const res = await request(app).get('/api/products?search=Nike');
             expect(res.status).toBe(200);
             res.body.products.forEach((p) => {
@@ -147,7 +166,7 @@ describe('GoalGear API Test Suite', () => {
             });
         });
 
-        it('should return featured footballs', async () => {
+        it('should return featured gear', async () => {
             const res = await request(app).get('/api/products/featured');
             expect(res.status).toBe(200);
             expect(res.body.products.length).toBeGreaterThan(0);
@@ -260,30 +279,31 @@ describe('GoalGear API Test Suite', () => {
             expect(typeof res.body.stats.totalProducts).toBe('number');
         });
 
-        it('should allow admin to create a new football product', async () => {
+        it('should allow admin to create football boots', async () => {
             const res = await request(app)
                 .post('/api/admin/products')
                 .set('Authorization', `Bearer ${adminToken}`)
                 .send({
-                    name: 'Derbystar Bundesliga Brillant APS',
-                    brand: 'Derbystar',
-                    category: 'Match Ball',
-                    ball_size: 5,
+                    name: 'Mizuno Morelia Neo IV Beta Made In Japan FG',
+                    brand: 'Mizuno',
+                    department: 'Boots',
+                    category: 'Football Boots',
+                    size_label: 'UK 9.0',
                     surface: 'Grass',
-                    fifa_rating: 'FIFA Quality Pro',
-                    price: 139.99,
-                    stock_quantity: 20,
-                    description: 'Official match ball of the German Bundesliga.',
-                    image_url: 'images/products/derbystar-bundesliga.jpg',
+                    fifa_rating: 'Elite Pro',
+                    price: 279.99,
+                    stock_quantity: 10,
+                    description: 'Handcrafted ultra-lightweight kangaroo leather boots.',
+                    image_url: 'images/products/mizuno-morelia-neo.jpg',
                     is_featured: true
                 });
 
             expect(res.status).toBe(201);
-            expect(res.body.product.name).toBe('Derbystar Bundesliga Brillant APS');
+            expect(res.body.product.name).toBe('Mizuno Morelia Neo IV Beta Made In Japan FG');
+            expect(res.body.product.department).toBe('Boots');
         });
 
         it('should allow admin to update order status', async () => {
-            // First get all orders
             const ordersRes = await request(app)
                 .get('/api/admin/orders')
                 .set('Authorization', `Bearer ${adminToken}`);

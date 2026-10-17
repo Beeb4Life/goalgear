@@ -1,6 +1,6 @@
 -- ====================================================================
 -- GoalGear - Database Schema (Supabase PostgreSQL)
--- Store Type: Footballs / Soccer Balls Only
+-- Departments: Footballs, Football Boots & Shoes, Socks & Grip Socks
 -- ====================================================================
 
 -- Enable pgcrypto for UUID generation if not already enabled
@@ -8,7 +8,7 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- ====================================================================
 -- 1. USERS TABLE
--- Stores both customer and administrator accounts
+-- Stores customer and administrator accounts
 -- ====================================================================
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -20,22 +20,26 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- Index for fast user authentication queries
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
 
 -- ====================================================================
 -- 2. PRODUCTS TABLE
--- Exclusively for Footballs / Soccer Balls
+-- Supports Footballs, Boots & Shoes, Socks & Grip Socks
 -- ====================================================================
 CREATE TABLE IF NOT EXISTS products (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(200) NOT NULL,
     brand VARCHAR(100) NOT NULL,
-    category VARCHAR(80) NOT NULL CHECK (category IN ('Match Ball', 'Training Ball', 'Futsal Ball', 'Retro/Heritage', 'Mini Ball')),
-    ball_size INT NOT NULL CHECK (ball_size IN (1, 3, 4, 5)),
+    department VARCHAR(50) NOT NULL DEFAULT 'Balls' CHECK (department IN ('Balls', 'Boots', 'Socks')),
+    category VARCHAR(80) NOT NULL CHECK (category IN (
+        'Match Ball', 'Training Ball', 'Futsal Ball', 'Retro/Heritage', 'Mini Ball',
+        'Football Boots', 'Turf / Futsal Shoes', 'Grip Socks', 'Crew Socks'
+    )),
+    ball_size INT, -- 1, 3, 4, 5 (for balls)
+    size_label VARCHAR(50) NOT NULL DEFAULT 'Size 5', -- Size 5, UK 9, M, L, etc.
     surface VARCHAR(80) NOT NULL DEFAULT 'Grass' CHECK (surface IN ('Grass', 'Artificial Turf', 'Indoor Court', 'Hard Ground', 'All Weather')),
-    fifa_rating VARCHAR(80) NOT NULL DEFAULT 'Standard' CHECK (fifa_rating IN ('FIFA Quality Pro', 'FIFA Quality', 'IMS Approved', 'Standard')),
+    fifa_rating VARCHAR(80) NOT NULL DEFAULT 'Standard',
     price NUMERIC(10, 2) NOT NULL CHECK (price >= 0),
     stock_quantity INT NOT NULL DEFAULT 0 CHECK (stock_quantity >= 0),
     description TEXT NOT NULL,
@@ -45,10 +49,9 @@ CREATE TABLE IF NOT EXISTS products (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- Indexes for product catalogue search, filtering, and sorting
+CREATE INDEX IF NOT EXISTS idx_products_department ON products(department);
 CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);
 CREATE INDEX IF NOT EXISTS idx_products_brand ON products(brand);
-CREATE INDEX IF NOT EXISTS idx_products_ball_size ON products(ball_size);
 CREATE INDEX IF NOT EXISTS idx_products_price ON products(price);
 CREATE INDEX IF NOT EXISTS idx_products_featured ON products(is_featured);
 CREATE INDEX IF NOT EXISTS idx_products_created_at ON products(created_at DESC);
@@ -75,7 +78,6 @@ CREATE TABLE IF NOT EXISTS orders (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- Indexes for customer order lookup and admin order management
 CREATE INDEX IF NOT EXISTS idx_orders_user_id ON orders(user_id);
 CREATE INDEX IF NOT EXISTS idx_orders_order_number ON orders(order_number);
 CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
@@ -91,7 +93,8 @@ CREATE TABLE IF NOT EXISTS order_items (
     product_id UUID REFERENCES products(id) ON DELETE SET NULL,
     product_name VARCHAR(200) NOT NULL,
     product_brand VARCHAR(100) NOT NULL,
-    ball_size INT NOT NULL,
+    product_department VARCHAR(50) DEFAULT 'Balls',
+    size_label VARCHAR(50) NOT NULL,
     quantity INT NOT NULL CHECK (quantity > 0),
     unit_price NUMERIC(10, 2) NOT NULL CHECK (unit_price >= 0),
     subtotal NUMERIC(10, 2) NOT NULL CHECK (subtotal >= 0),

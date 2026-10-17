@@ -2,7 +2,7 @@
  * GoalGear - Orders Controller
  *
  * Handles order placement, inventory validation/decrement,
- * and customer order history.
+ * and customer order history across footballs, boots, and socks.
  */
 
 const { getDb } = require('../config/supabase');
@@ -34,7 +34,7 @@ async function createOrder(req, res) {
         } = req.body;
 
         if (!items || !Array.isArray(items) || items.length === 0) {
-            return res.status(400).json({ error: 'Order must contain at least one football.' });
+            return res.status(400).json({ error: 'Order must contain at least one item.' });
         }
 
         if (!customerName || !customerEmail || !shippingAddress || !city || !postalCode) {
@@ -58,7 +58,7 @@ async function createOrder(req, res) {
                 .eq('id', item.productId);
 
             if (pError || !products || products.length === 0) {
-                return res.status(404).json({ error: `Football product ${item.productId} was not found.` });
+                return res.status(404).json({ error: `Product ${item.productId} was not found.` });
             }
 
             const product = products[0];
@@ -115,12 +115,15 @@ async function createOrder(req, res) {
         // Insert order items and deduct stock
         const createdItems = [];
         for (const line of lineItems) {
+            const sizeLabel = line.product.size_label || (line.product.ball_size ? `Size ${line.product.ball_size}` : 'Standard');
             const itemPayload = {
                 order_id: insertedOrder.id,
                 product_id: line.product.id,
                 product_name: line.product.name,
                 product_brand: line.product.brand,
-                ball_size: line.product.ball_size,
+                product_department: line.product.department || 'Balls',
+                size_label: sizeLabel,
+                ball_size: line.product.ball_size || null,
                 quantity: line.quantity,
                 unit_price: line.unitPrice,
                 subtotal: line.subtotal

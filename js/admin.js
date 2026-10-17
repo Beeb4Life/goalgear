@@ -1,8 +1,8 @@
 /**
  * GoalGear - Admin Management Portal JavaScript
  *
- * Handles admin authentication, dashboard metrics, product CRUD operations,
- * inventory stock modifications, and order status fulfillment.
+ * Handles admin authentication, dashboard metrics, product CRUD operations
+ * across Footballs, Boots, and Socks, inventory management, and order fulfillment.
  */
 
 const adminState = {
@@ -17,6 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
   checkAdminAuth();
   setupAdminListeners();
 });
+
+function getProductFallbackImage(dept) {
+  if (dept === 'Boots') return 'images/products/placeholder-boots.svg';
+  if (dept === 'Socks') return 'images/products/placeholder-socks.svg';
+  return 'images/products/placeholder-ball.svg';
+}
 
 // ====================================================================
 // Authentication & Protection
@@ -39,7 +45,6 @@ function checkAdminAuth() {
       `;
     }
 
-    // Load admin data
     loadDashboardStats();
     loadAdminProducts();
     loadAdminOrders();
@@ -153,27 +158,31 @@ async function loadAdminProducts() {
     adminState.products = data.products || [];
 
     if (adminState.products.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="9" class="center">No footballs in database.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="10" class="center">No products in database.</td></tr>';
       return;
     }
 
     tbody.innerHTML = adminState.products.map((p) => {
       const isLow = p.stock_quantity <= 10;
+      const fallbackImg = getProductFallbackImage(p.department);
+      const sizeDisplay = p.size_label || (p.ball_size ? `Size ${p.ball_size}` : 'Standard');
+
       return `
         <tr>
           <td style="width: 50px;">
             <img 
               src="${escapeHtml(p.image_url)}" 
               style="width: 40px; height: 40px; object-fit: contain;" 
-              onerror="this.onerror=null; this.src='images/products/placeholder-ball.svg';"
+              onerror="this.onerror=null; this.src='${fallbackImg}';"
             >
           </td>
           <td>
             <strong>${escapeHtml(p.name)}</strong><br>
-            <small style="color: #6c757d;">${escapeHtml(p.brand)} &bull; ${escapeHtml(p.fifa_rating)}</small>
+            <small style="color: #6c757d;">${escapeHtml(p.brand)} &bull; ${escapeHtml(p.fifa_rating || 'Standard')}</small>
           </td>
+          <td><span class="productSpecsBadge">${escapeHtml(p.department || 'Balls')}</span></td>
           <td><span class="productSpecsBadge">${escapeHtml(p.category)}</span></td>
-          <td>Size ${p.ball_size}</td>
+          <td>${escapeHtml(sizeDisplay)}</td>
           <td>${escapeHtml(p.surface)}</td>
           <td><strong>&pound;${parseFloat(p.price).toFixed(2)}</strong></td>
           <td>
@@ -200,15 +209,33 @@ async function loadAdminProducts() {
       `;
     }).join('');
   } catch (err) {
-    tbody.innerHTML = `<tr><td colspan="9" class="alertBox alertError">Error loading products: ${escapeHtml(err.message)}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="10" class="alertBox alertError">Error loading products: ${escapeHtml(err.message)}</td></tr>`;
+  }
+}
+
+function handleDeptChange(dept) {
+  const catSelect = document.getElementById('prodCategory');
+  const sizeInput = document.getElementById('prodSizeLabel');
+  if (!catSelect) return;
+
+  if (dept === 'Boots') {
+    catSelect.value = 'Football Boots';
+    if (sizeInput && !sizeInput.value) sizeInput.value = 'UK 9.0';
+  } else if (dept === 'Socks') {
+    catSelect.value = 'Grip Socks';
+    if (sizeInput && !sizeInput.value) sizeInput.value = 'M (UK 6-9)';
+  } else {
+    catSelect.value = 'Match Ball';
+    if (sizeInput && !sizeInput.value) sizeInput.value = 'Size 5';
   }
 }
 
 function openAddProductModal() {
   document.getElementById('productForm').reset();
   document.getElementById('prodEditId').value = '';
-  document.getElementById('productModalTitle').textContent = 'Add New Football Ball';
+  document.getElementById('productModalTitle').textContent = 'Add New Football Product';
   document.getElementById('productModalAlert').style.display = 'none';
+  document.getElementById('prodSizeLabel').value = 'Size 5';
   openModal('productModal');
 }
 
@@ -219,17 +246,18 @@ function openEditProductModal(id) {
   document.getElementById('prodEditId').value = p.id;
   document.getElementById('prodName').value = p.name;
   document.getElementById('prodBrand').value = p.brand;
+  document.getElementById('prodDepartment').value = p.department || 'Balls';
   document.getElementById('prodCategory').value = p.category;
-  document.getElementById('prodSize').value = p.ball_size;
+  document.getElementById('prodSizeLabel').value = p.size_label || (p.ball_size ? `Size ${p.ball_size}` : 'Standard');
   document.getElementById('prodSurface').value = p.surface;
   document.getElementById('prodPrice').value = p.price;
   document.getElementById('prodStock').value = p.stock_quantity;
-  document.getElementById('prodFifa').value = p.fifa_rating;
+  document.getElementById('prodFifa').value = p.fifa_rating || 'Standard';
   document.getElementById('prodImageUrl').value = p.image_url;
   document.getElementById('prodDesc').value = p.description || '';
   document.getElementById('prodFeatured').checked = Boolean(p.is_featured);
 
-  document.getElementById('productModalTitle').textContent = 'Edit Football Ball';
+  document.getElementById('productModalTitle').textContent = 'Edit Product';
   document.getElementById('productModalAlert').style.display = 'none';
   openModal('productModal');
 }
@@ -240,16 +268,27 @@ async function handleProductFormSubmit(e) {
   const editId = document.getElementById('prodEditId').value;
   const isEditing = Boolean(editId);
 
+  const dept = document.getElementById('prodDepartment').value;
+  const sizeLabel = document.getElementById('prodSizeLabel').value.trim();
+
+  let ballSize = null;
+  if (dept === 'Balls') {
+    const match = sizeLabel.match(/\d+/);
+    if (match) ballSize = parseInt(match[0], 10);
+  }
+
   const payload = {
     name: document.getElementById('prodName').value.trim(),
     brand: document.getElementById('prodBrand').value.trim(),
+    department: dept,
     category: document.getElementById('prodCategory').value,
-    ball_size: parseInt(document.getElementById('prodSize').value, 10),
+    ball_size: ballSize,
+    size_label: sizeLabel,
     surface: document.getElementById('prodSurface').value,
     price: parseFloat(document.getElementById('prodPrice').value),
     stock_quantity: parseInt(document.getElementById('prodStock').value, 10),
-    fifa_rating: document.getElementById('prodFifa').value,
-    image_url: document.getElementById('prodImageUrl').value.trim() || 'images/products/placeholder-ball.svg',
+    fifa_rating: document.getElementById('prodFifa').value.trim() || 'Standard',
+    image_url: document.getElementById('prodImageUrl').value.trim() || getProductFallbackImage(dept),
     description: document.getElementById('prodDesc').value.trim(),
     is_featured: document.getElementById('prodFeatured').checked
   };
@@ -266,7 +305,7 @@ async function handleProductFormSubmit(e) {
     closeModal('productModal');
     loadDashboardStats();
     loadAdminProducts();
-    alert(`Football ${isEditing ? 'updated' : 'added'} successfully!`);
+    alert(`Product ${isEditing ? 'updated' : 'added'} successfully!`);
   } catch (err) {
     if (alertEl) {
       alertEl.style.display = 'block';
@@ -298,7 +337,7 @@ async function quickUpdateStock(productId) {
 }
 
 async function deleteProduct(id, name) {
-  if (!confirm(`Are you sure you want to delete "${name}" from the football catalogue?`)) {
+  if (!confirm(`Are you sure you want to delete "${name}" from the catalogue?`)) {
     return;
   }
 
@@ -334,7 +373,7 @@ async function loadAdminOrders(statusFilter = '') {
 
     tbody.innerHTML = adminState.orders.map((o) => {
       const itemsList = (o.items || [])
-        .map((i) => `${escapeHtml(i.product_name)} (x${i.quantity})`)
+        .map((i) => `${escapeHtml(i.product_name)} (${escapeHtml(i.size_label || '')}) x${i.quantity}`)
         .join('<br>');
 
       return `
@@ -429,6 +468,7 @@ function escapeHtml(text) {
 
 window.openAddProductModal = openAddProductModal;
 window.openEditProductModal = openEditProductModal;
+window.handleDeptChange = handleDeptChange;
 window.quickUpdateStock = quickUpdateStock;
 window.deleteProduct = deleteProduct;
 window.changeOrderStatus = changeOrderStatus;

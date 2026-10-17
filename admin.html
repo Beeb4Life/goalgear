@@ -20,6 +20,7 @@
   <nav class="topNavBar">
     <div class="navLinks">
       <a href="index.html">&larr; Back to Public Storefront</a>
+      <a href="catalogue.html">View Live Catalogue</a>
     </div>
 
     <div class="navActions" id="adminAuthNav">
@@ -78,7 +79,7 @@
           <div class="statValue" id="statOrders">0</div>
         </div>
         <div class="statCard">
-          <span style="color: var(--text-muted); font-size: 13px;">Footballs in Catalogue</span>
+          <span style="color: var(--text-muted); font-size: 13px;">Products in Catalogue</span>
           <div class="statValue" id="statProducts">0</div>
         </div>
         <div class="statCard">
@@ -90,15 +91,15 @@
 
     <!-- Low Stock Notice Banner -->
     <div id="lowStockAlertBanner" style="display: none;" class="alertBox alertError">
-      <strong>Inventory Warning:</strong> One or more footballs have 10 or fewer units remaining in stock. Check the table below to replenish.
+      <strong>Inventory Warning:</strong> One or more items have 10 or fewer units remaining in stock. Check the table below to replenish.
     </div>
 
     <!-- Product Catalogue CRUD Section -->
     <section style="margin-top: 30px;">
       <hr>
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
-        <h2 style="margin: 0; color: var(--primary-color);">Football Catalogue Management</h2>
-        <button class="btn btn-primary" onclick="openAddProductModal()">+ Add New Football</button>
+        <h2 style="margin: 0; color: var(--primary-color);">Product Management (Balls, Boots, Socks)</h2>
+        <button class="btn btn-primary" onclick="openAddProductModal()">+ Add New Product</button>
       </div>
 
       <div style="overflow-x: auto;">
@@ -107,6 +108,7 @@
             <tr>
               <th>Image</th>
               <th>Name &amp; Brand</th>
+              <th>Department</th>
               <th>Category</th>
               <th>Size</th>
               <th>Surface</th>
@@ -117,7 +119,7 @@
             </tr>
           </thead>
           <tbody id="adminProductsTbody">
-            <tr><td colspan="9" class="center">Loading products...</td></tr>
+            <tr><td colspan="10" class="center">Loading products...</td></tr>
           </tbody>
         </table>
       </div>
@@ -164,12 +166,12 @@
   </main>
 
   <!-- ================================================================
-       4. Product Modal (Add / Edit Football)
+       4. Product Modal (Add / Edit Product)
        ================================================================ -->
   <div id="productModal" class="modalOverlay">
     <div class="modalContent" style="max-width: 600px;">
       <div class="modalHeader">
-        <h3 id="productModalTitle">Add New Football</h3>
+        <h3 id="productModalTitle">Add New Product</h3>
         <button class="closeModalBtn" onclick="closeModal('productModal')">&times;</button>
       </div>
 
@@ -179,15 +181,26 @@
         <input type="hidden" id="prodEditId">
 
         <div class="formGroup">
-          <label for="prodName">Ball Model / Name *</label>
-          <input type="text" id="prodName" required placeholder="e.g. Adidas UCL Pro London Match Ball">
+          <label for="prodName">Item Name / Model *</label>
+          <input type="text" id="prodName" required placeholder="e.g. Nike Mercurial Vapor 15 Elite FG">
         </div>
 
         <div style="display: flex; gap: 10px;">
           <div class="formGroup" style="flex: 1;">
             <label for="prodBrand">Brand *</label>
-            <input type="text" id="prodBrand" required placeholder="e.g. Adidas">
+            <input type="text" id="prodBrand" required placeholder="e.g. Nike">
           </div>
+          <div class="formGroup" style="flex: 1;">
+            <label for="prodDepartment">Department *</label>
+            <select id="prodDepartment" required onchange="handleDeptChange(this.value)">
+              <option value="Balls">⚽ Footballs</option>
+              <option value="Boots">👟 Boots &amp; Shoes</option>
+              <option value="Socks">🧦 Socks &amp; Grip Gear</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
           <div class="formGroup" style="flex: 1;">
             <label for="prodCategory">Category *</label>
             <select id="prodCategory" required>
@@ -196,29 +209,15 @@
               <option value="Futsal Ball">Futsal Ball</option>
               <option value="Retro/Heritage">Retro/Heritage</option>
               <option value="Mini Ball">Mini Ball</option>
-            </select>
-          </div>
-        </div>
-
-        <div style="display: flex; gap: 10px;">
-          <div class="formGroup" style="flex: 1;">
-            <label for="prodSize">Ball Size *</label>
-            <select id="prodSize" required>
-              <option value="5">Size 5 (Standard / Adult)</option>
-              <option value="4">Size 4 (Youth / Futsal)</option>
-              <option value="3">Size 3 (Junior)</option>
-              <option value="1">Size 1 (Mini Skills)</option>
+              <option value="Football Boots">Football Boots</option>
+              <option value="Turf / Futsal Shoes">Turf / Futsal Shoes</option>
+              <option value="Grip Socks">Grip Socks</option>
+              <option value="Crew Socks">Crew Socks</option>
             </select>
           </div>
           <div class="formGroup" style="flex: 1;">
-            <label for="prodSurface">Pitch Surface</label>
-            <select id="prodSurface">
-              <option value="Grass">Grass</option>
-              <option value="Artificial Turf">Artificial Turf</option>
-              <option value="Indoor Court">Indoor Court</option>
-              <option value="All Weather">All Weather</option>
-              <option value="Hard Ground">Hard Ground</option>
-            </select>
+            <label for="prodSizeLabel">Size Label *</label>
+            <input type="text" id="prodSizeLabel" required placeholder="e.g. Size 5, UK 9.0, or M (UK 6-9)">
           </div>
         </div>
 
@@ -233,27 +232,34 @@
           </div>
         </div>
 
-        <div class="formGroup">
-          <label for="prodFifa">FIFA Rating</label>
-          <select id="prodFifa">
-            <option value="FIFA Quality Pro">FIFA Quality Pro</option>
-            <option value="FIFA Quality">FIFA Quality</option>
-            <option value="IMS Approved">IMS Approved</option>
-            <option value="Standard">Standard</option>
-          </select>
+        <div style="display: flex; gap: 10px;">
+          <div class="formGroup" style="flex: 1;">
+            <label for="prodSurface">Surface</label>
+            <select id="prodSurface">
+              <option value="Grass">Grass</option>
+              <option value="Artificial Turf">Artificial Turf</option>
+              <option value="Indoor Court">Indoor Court</option>
+              <option value="All Weather">All Weather</option>
+              <option value="Hard Ground">Hard Ground</option>
+            </select>
+          </div>
+          <div class="formGroup" style="flex: 1;">
+            <label for="prodFifa">Rating / Grade</label>
+            <input type="text" id="prodFifa" placeholder="e.g. FIFA Quality Pro, Elite Pro">
+          </div>
         </div>
 
         <div class="formGroup">
           <label for="prodImageUrl">Image URL / Path</label>
-          <input type="text" id="prodImageUrl" placeholder="images/products/my-ball.jpg">
+          <input type="text" id="prodImageUrl" placeholder="images/products/my-item.jpg">
           <small style="color: var(--text-muted); font-size: 11px;">
-            Recommended size: 500x500 px. Fallback vector graphic will display automatically if image is absent.
+            Leave empty to automatically use the department's clean vector graphic fallback.
           </small>
         </div>
 
         <div class="formGroup">
           <label for="prodDesc">Product Description</label>
-          <textarea id="prodDesc" rows="3" placeholder="Technical specifications, panel construction, bladder type..."></textarea>
+          <textarea id="prodDesc" rows="3" placeholder="Technical specs, upper material, traction pattern..."></textarea>
         </div>
 
         <div class="formGroup" style="display: flex; align-items: center; gap: 8px;">
@@ -263,7 +269,7 @@
 
         <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 15px;">
           <button type="button" class="btn btn-secondary" onclick="closeModal('productModal')">Cancel</button>
-          <button type="submit" class="btn btn-primary" id="saveProductBtn">Save Football</button>
+          <button type="submit" class="btn btn-primary" id="saveProductBtn">Save Product</button>
         </div>
       </form>
     </div>

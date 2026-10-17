@@ -2,7 +2,7 @@
  * GoalGear - Product Catalogue Controller
  *
  * Provides dynamic queries, multi-faceted filtering, searching,
- * and retrieval for football/soccer balls.
+ * and retrieval for Footballs, Boots & Shoes, Socks & Grip Socks.
  */
 
 const { getDb } = require('../config/supabase');
@@ -14,9 +14,11 @@ async function getAllProducts(req, res) {
     try {
         const {
             search,
+            department,
             category,
             brand,
             ball_size,
+            size_label,
             surface,
             min_price,
             max_price,
@@ -26,6 +28,10 @@ async function getAllProducts(req, res) {
 
         const db = getDb();
         let query = db.from('products').select('*');
+
+        if (department) {
+            query = query.eq('department', department);
+        }
 
         if (category) {
             query = query.eq('category', category);
@@ -37,6 +43,10 @@ async function getAllProducts(req, res) {
 
         if (ball_size) {
             query = query.eq('ball_size', parseInt(ball_size, 10));
+        }
+
+        if (size_label) {
+            query = query.eq('size_label', size_label);
         }
 
         if (surface) {
@@ -69,16 +79,17 @@ async function getAllProducts(req, res) {
         const { data: products, error } = await query;
 
         if (error) {
-            return res.status(500).json({ error: 'Failed to fetch football catalogue.' });
+            return res.status(500).json({ error: 'Failed to fetch catalogue.' });
         }
 
-        // Apply client search across name, brand, description
+        // Apply client search across name, brand, description, and department
         let filtered = products || [];
         if (search && search.trim()) {
             const term = search.trim().toLowerCase();
             filtered = filtered.filter((p) =>
                 p.name.toLowerCase().includes(term) ||
                 p.brand.toLowerCase().includes(term) ||
+                (p.department && p.department.toLowerCase().includes(term)) ||
                 p.category.toLowerCase().includes(term) ||
                 (p.description && p.description.toLowerCase().includes(term))
             );
@@ -95,7 +106,7 @@ async function getAllProducts(req, res) {
 }
 
 /**
- * Get featured footballs for the homepage showcase
+ * Get featured gear for the homepage showcase
  */
 async function getFeaturedProducts(req, res) {
     try {
@@ -107,7 +118,7 @@ async function getFeaturedProducts(req, res) {
             .order('price', { ascending: false });
 
         if (error) {
-            return res.status(500).json({ error: 'Failed to fetch featured footballs.' });
+            return res.status(500).json({ error: 'Failed to fetch featured gear.' });
         }
 
         return res.status(200).json({
@@ -116,7 +127,7 @@ async function getFeaturedProducts(req, res) {
         });
     } catch (err) {
         console.error('Featured products error:', err);
-        return res.status(500).json({ error: 'Internal server error fetching featured footballs.' });
+        return res.status(500).json({ error: 'Internal server error fetching featured gear.' });
     }
 }
 
@@ -134,7 +145,7 @@ async function getProductById(req, res) {
             .eq('id', id);
 
         if (error || !products || products.length === 0) {
-            return res.status(404).json({ error: 'Football ball not found.' });
+            return res.status(404).json({ error: 'Product not found.' });
         }
 
         return res.status(200).json({ product: products[0] });
@@ -145,7 +156,7 @@ async function getProductById(req, res) {
 }
 
 /**
- * Get available filter options (categories, brands, sizes, surfaces)
+ * Get available filter options (departments, categories, brands, sizes, surfaces)
  */
 async function getFilterOptions(req, res) {
     try {
@@ -156,12 +167,14 @@ async function getFilterOptions(req, res) {
             return res.status(500).json({ error: 'Failed to load filter options.' });
         }
 
+        const departments = ['Balls', 'Boots', 'Socks'];
         const categories = [...new Set(products.map((p) => p.category))].sort();
         const brands = [...new Set(products.map((p) => p.brand))].sort();
-        const sizes = [...new Set(products.map((p) => p.ball_size))].sort((a, b) => a - b);
+        const sizes = [...new Set(products.map((p) => p.size_label || (p.ball_size ? `Size ${p.ball_size}` : '')))].filter(Boolean).sort();
         const surfaces = [...new Set(products.map((p) => p.surface))].sort();
 
         return res.status(200).json({
+            departments,
             categories,
             brands,
             sizes,

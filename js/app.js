@@ -2,7 +2,8 @@
  * GoalGear - Customer Storefront Frontend JavaScript
  *
  * Handles dynamic product loading, searching, filtering, modal views,
- * shopping cart persistence, customer auth, demo checkout, and order history.
+ * shopping cart persistence, customer auth, demo checkout, and order history
+ * across separate pages (Home, Catalogue, About, Contact).
  */
 
 // ====================================================================
@@ -16,9 +17,10 @@ const state = {
   user: JSON.parse(localStorage.getItem('goalgear_user') || 'null'),
   currentFilter: {
     search: '',
+    department: '',
     category: '',
     brand: '',
-    ball_size: '',
+    size_label: '',
     surface: '',
     sort: 'newest'
   }
@@ -30,11 +32,34 @@ const state = {
 document.addEventListener('DOMContentLoaded', () => {
   initAuthUI();
   updateCartBadge();
-  fetchFeaturedProducts();
-  fetchFilterOptions();
-  fetchProducts();
+
+  // Read URL parameters if present (e.g. ?department=Boots)
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('department')) {
+    state.currentFilter.department = urlParams.get('department');
+  }
+  if (urlParams.get('category')) {
+    state.currentFilter.category = urlParams.get('category');
+  }
+
+  // Load appropriate page data
+  if (document.getElementById('featuredGrid')) {
+    fetchFeaturedProducts();
+  }
+  if (document.getElementById('catalogueGrid')) {
+    fetchFilterOptions();
+    fetchProducts();
+  }
+
   setupEventListeners();
 });
+
+// Helper for fallback image according to product department
+function getProductFallbackImage(dept) {
+  if (dept === 'Boots') return 'images/products/placeholder-boots.svg';
+  if (dept === 'Socks') return 'images/products/placeholder-socks.svg';
+  return 'images/products/placeholder-ball.svg';
+}
 
 // ====================================================================
 // API Calls
@@ -58,7 +83,7 @@ async function fetchFeaturedProducts() {
     state.featured = data.products || [];
     renderFeaturedProducts();
   } catch (err) {
-    console.error('Failed to fetch featured balls:', err);
+    console.error('Failed to fetch featured gear:', err);
   }
 }
 
@@ -74,14 +99,15 @@ async function fetchFilterOptions() {
 async function fetchProducts() {
   const container = document.getElementById('catalogueGrid');
   if (container) {
-    container.innerHTML = '<div class="center" style="grid-column: 1/-1; padding: 30px;">Loading footballs...</div>';
+    container.innerHTML = '<div class="center" style="grid-column: 1/-1; padding: 30px;">Loading football gear...</div>';
   }
 
   try {
     const params = new URLSearchParams();
+    if (state.currentFilter.department) params.append('department', state.currentFilter.department);
     if (state.currentFilter.category) params.append('category', state.currentFilter.category);
     if (state.currentFilter.brand) params.append('brand', state.currentFilter.brand);
-    if (state.currentFilter.ball_size) params.append('ball_size', state.currentFilter.ball_size);
+    if (state.currentFilter.size_label) params.append('size_label', state.currentFilter.size_label);
     if (state.currentFilter.surface) params.append('surface', state.currentFilter.surface);
     if (state.currentFilter.sort) params.append('sort', state.currentFilter.sort);
     if (state.currentFilter.search) params.append('search', state.currentFilter.search);
@@ -104,11 +130,11 @@ function renderFeaturedProducts() {
   if (!container) return;
 
   if (state.featured.length === 0) {
-    container.innerHTML = '<p class="center">No featured footballs available.</p>';
+    container.innerHTML = '<p class="center">No featured gear available right now.</p>';
     return;
   }
 
-  container.innerHTML = state.featured.slice(0, 4).map((p) => createProductCardHtml(p)).join('');
+  container.innerHTML = state.featured.slice(0, 6).map((p) => createProductCardHtml(p)).join('');
 }
 
 function renderCatalogue() {
@@ -117,11 +143,11 @@ function renderCatalogue() {
   if (!container) return;
 
   if (countEl) {
-    countEl.textContent = `Showing ${state.products.length} football${state.products.length === 1 ? '' : 's'}`;
+    countEl.textContent = `Showing ${state.products.length} product${state.products.length === 1 ? '' : 's'}`;
   }
 
   if (state.products.length === 0) {
-    container.innerHTML = '<div class="center" style="grid-column: 1/-1; padding: 40px; color: #6c757d;">No footballs match your search or filter selection.</div>';
+    container.innerHTML = '<div class="center" style="grid-column: 1/-1; padding: 40px; color: #6c757d;">No products match your search or filter selection.</div>';
     return;
   }
 
@@ -132,6 +158,8 @@ function createProductCardHtml(p) {
   const inStock = p.stock_quantity > 0;
   const stockText = inStock ? `In Stock (${p.stock_quantity})` : 'Out of Stock';
   const stockClass = inStock ? 'inStock' : 'outOfStock';
+  const fallbackImg = getProductFallbackImage(p.department);
+  const sizeDisplay = p.size_label || (p.ball_size ? `Size ${p.ball_size}` : '');
 
   return `
     <div class="productCard" data-id="${p.id}">
@@ -140,12 +168,12 @@ function createProductCardHtml(p) {
           <img 
             src="${escapeHtml(p.image_url)}" 
             alt="${escapeHtml(p.name)}" 
-            onerror="this.onerror=null; this.src='images/products/placeholder-ball.svg';"
+            onerror="this.onerror=null; this.src='${fallbackImg}';"
           >
         </div>
         <div class="productMeta">
           <span>${escapeHtml(p.brand)}</span>
-          <span>Size ${p.ball_size}</span>
+          <span>${escapeHtml(sizeDisplay)}</span>
         </div>
         <div class="productName" onclick="openProductDetail('${p.id}')">${escapeHtml(p.name)}</div>
         <div>
@@ -170,14 +198,20 @@ function createProductCardHtml(p) {
 }
 
 function populateFilterDropdowns(options) {
+  const deptSelect = document.getElementById('filterDepartment');
   const catSelect = document.getElementById('filterCategory');
   const brandSelect = document.getElementById('filterBrand');
   const sizeSelect = document.getElementById('filterSize');
   const surfaceSelect = document.getElementById('filterSurface');
 
+  if (deptSelect && options.departments) {
+    deptSelect.innerHTML = '<option value="">All Departments</option>' +
+      options.departments.map((d) => `<option value="${escapeHtml(d)}" ${state.currentFilter.department === d ? 'selected' : ''}>${d === 'Balls' ? '⚽ Footballs' : (d === 'Boots' ? '👟 Boots & Shoes' : '🧦 Socks & Grip Gear')}</option>`).join('');
+  }
+
   if (catSelect && options.categories) {
     catSelect.innerHTML = '<option value="">All Categories</option>' +
-      options.categories.map((c) => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+      options.categories.map((c) => `<option value="${escapeHtml(c)}" ${state.currentFilter.category === c ? 'selected' : ''}>${escapeHtml(c)}</option>`).join('');
   }
 
   if (brandSelect && options.brands) {
@@ -187,7 +221,7 @@ function populateFilterDropdowns(options) {
 
   if (sizeSelect && options.sizes) {
     sizeSelect.innerHTML = '<option value="">All Sizes</option>' +
-      options.sizes.map((s) => `<option value="${s}">Size ${s}</option>`).join('');
+      options.sizes.map((s) => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
   }
 
   if (surfaceSelect && options.surfaces) {
@@ -213,21 +247,29 @@ function updateCartBadge() {
 }
 
 function addToCart(productId, qty = 1) {
-  // Find product from state or fetch
   const product = state.products.find((p) => p.id === productId) ||
                   state.featured.find((p) => p.id === productId);
 
   if (!product) {
-    alert('Product details could not be found.');
+    // Attempt fast fetch if not in active state array
+    apiRequest(`/api/products/${productId}`).then((data) => {
+      performAddToCart(data.product, qty);
+    }).catch(() => {
+      alert('Product details could not be found.');
+    });
     return;
   }
 
+  performAddToCart(product, qty);
+}
+
+function performAddToCart(product, qty) {
   if (product.stock_quantity <= 0) {
-    alert('This football is currently out of stock.');
+    alert('This item is currently out of stock.');
     return;
   }
 
-  const existing = state.cart.find((item) => item.productId === productId);
+  const existing = state.cart.find((item) => item.productId === product.id);
   const currentInCart = existing ? existing.quantity : 0;
 
   if (currentInCart + qty > product.stock_quantity) {
@@ -242,7 +284,8 @@ function addToCart(productId, qty = 1) {
       productId: product.id,
       name: product.name,
       brand: product.brand,
-      ball_size: product.ball_size,
+      department: product.department || 'Balls',
+      size_label: product.size_label || (product.ball_size ? `Size ${product.ball_size}` : 'Standard'),
       price: parseFloat(product.price),
       image_url: product.image_url,
       quantity: qty
@@ -284,7 +327,6 @@ function closeModal(modalId) {
   if (modal) modal.classList.remove('active');
 }
 
-// Close when clicking modal backdrop
 window.addEventListener('click', (e) => {
   if (e.target.classList.contains('modalOverlay')) {
     e.target.classList.remove('active');
@@ -297,12 +339,14 @@ async function openProductDetail(productId) {
   const content = document.getElementById('productDetailContent');
   if (!modal || !content) return;
 
-  content.innerHTML = '<div class="center" style="padding: 30px;">Loading football details...</div>';
+  content.innerHTML = '<div class="center" style="padding: 30px;">Loading specifications...</div>';
   openModal('productDetailModal');
 
   try {
     const data = await apiRequest(`/api/products/${productId}`);
     const p = data.product;
+    const fallbackImg = getProductFallbackImage(p.department);
+    const sizeDisplay = p.size_label || (p.ball_size ? `Size ${p.ball_size}` : 'Standard');
 
     const inStock = p.stock_quantity > 0;
     content.innerHTML = `
@@ -312,20 +356,21 @@ async function openProductDetail(productId) {
             src="${escapeHtml(p.image_url)}" 
             alt="${escapeHtml(p.name)}" 
             style="max-width: 100%; max-height: 240px; object-fit: contain;" 
-            onerror="this.onerror=null; this.src='images/products/placeholder-ball.svg';"
+            onerror="this.onerror=null; this.src='${fallbackImg}';"
           >
         </div>
         <div style="flex: 2 1 280px;">
           <h2 style="margin: 0 0 6px 0; color: var(--primary-color);">${escapeHtml(p.name)}</h2>
           <div style="color: var(--text-muted); font-size: 13px; margin-bottom: 12px;">
-            Brand: <strong>${escapeHtml(p.brand)}</strong> &bull; Size: <strong>${p.ball_size}</strong>
+            Brand: <strong>${escapeHtml(p.brand)}</strong> &bull; Size: <strong>${escapeHtml(sizeDisplay)}</strong>
           </div>
           <div style="font-size: 22px; font-weight: bold; margin-bottom: 12px;">&pound;${parseFloat(p.price).toFixed(2)}</div>
           
           <table class="dataTable" style="margin-bottom: 15px;">
+            <tr><th>Department</th><td>${escapeHtml(p.department || 'Balls')}</td></tr>
             <tr><th>Category</th><td>${escapeHtml(p.category)}</td></tr>
             <tr><th>Surface Type</th><td>${escapeHtml(p.surface)}</td></tr>
-            <tr><th>FIFA Rating</th><td>${escapeHtml(p.fifa_rating)}</td></tr>
+            <tr><th>Rating / Grade</th><td>${escapeHtml(p.fifa_rating)}</td></tr>
             <tr><th>Inventory</th><td class="${inStock ? 'inStock' : 'outOfStock'}" style="font-weight: bold;">
               ${inStock ? `Available (${p.stock_quantity} in stock)` : 'Out of Stock'}
             </td></tr>
@@ -377,14 +422,15 @@ function renderCartModal() {
   const itemsHtml = state.cart.map((item) => {
     const itemTotal = item.price * item.quantity;
     total += itemTotal;
+    const fallbackImg = getProductFallbackImage(item.department);
     return `
       <tr>
         <td style="width: 50px;">
-          <img src="${escapeHtml(item.image_url)}" style="width: 40px; height: 40px; object-fit: contain;" onerror="this.onerror=null; this.src='images/products/placeholder-ball.svg';">
+          <img src="${escapeHtml(item.image_url)}" style="width: 40px; height: 40px; object-fit: contain;" onerror="this.onerror=null; this.src='${fallbackImg}';">
         </td>
         <td>
           <strong>${escapeHtml(item.name)}</strong><br>
-          <small style="color: #6c757d;">${escapeHtml(item.brand)} &bull; Size ${item.ball_size}</small>
+          <small style="color: #6c757d;">${escapeHtml(item.brand)} &bull; ${escapeHtml(item.size_label)}</small>
         </td>
         <td>&pound;${item.price.toFixed(2)}</td>
         <td>
@@ -405,7 +451,7 @@ function renderCartModal() {
       <thead>
         <tr>
           <th></th>
-          <th>Football</th>
+          <th>Item</th>
           <th>Price</th>
           <th>Qty</th>
           <th>Total</th>
@@ -432,7 +478,6 @@ function openCheckoutModal() {
   closeModal('cartModal');
   openModal('checkoutModal');
 
-  // Pre-fill fields if user is logged in
   if (state.user) {
     const nameInput = document.getElementById('checkoutName');
     const emailInput = document.getElementById('checkoutEmail');
@@ -483,7 +528,6 @@ async function handlePlaceOrder(e) {
       body: JSON.stringify(payload)
     });
 
-    // Clear cart on successful placement
     state.cart = [];
     saveCart();
 
@@ -558,7 +602,7 @@ async function openOrderHistoryModal() {
           <tbody>
             ${(o.items || []).map((i) => `
               <tr>
-                <td>${escapeHtml(i.product_name)} (Size ${i.ball_size})</td>
+                <td>${escapeHtml(i.product_name)} (${escapeHtml(i.size_label || '')})</td>
                 <td>x${i.quantity}</td>
                 <td>&pound;${parseFloat(i.subtotal).toFixed(2)}</td>
               </tr>
@@ -706,6 +750,14 @@ function setupEventListeners() {
   }
 
   // Filter dropdowns
+  const deptSelect = document.getElementById('filterDepartment');
+  if (deptSelect) {
+    deptSelect.addEventListener('change', (e) => {
+      state.currentFilter.department = e.target.value;
+      fetchProducts();
+    });
+  }
+
   const catSelect = document.getElementById('filterCategory');
   if (catSelect) {
     catSelect.addEventListener('change', (e) => {
@@ -725,7 +777,7 @@ function setupEventListeners() {
   const sizeSelect = document.getElementById('filterSize');
   if (sizeSelect) {
     sizeSelect.addEventListener('change', (e) => {
-      state.currentFilter.ball_size = e.target.value;
+      state.currentFilter.size_label = e.target.value;
       fetchProducts();
     });
   }
@@ -757,7 +809,6 @@ function setupEventListeners() {
   if (checkoutForm) checkoutForm.addEventListener('submit', handlePlaceOrder);
 }
 
-// Escape HTML helper
 function escapeHtml(text) {
   if (!text) return '';
   return String(text)
@@ -768,7 +819,6 @@ function escapeHtml(text) {
     .replace(/'/g, '&#039;');
 }
 
-// Expose modal and cart functions to global scope for HTML onclick attributes
 window.openProductDetail = openProductDetail;
 window.addToCart = addToCart;
 window.addToCartFromDetail = addToCartFromDetail;

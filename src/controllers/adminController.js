@@ -1,8 +1,8 @@
 /**
  * GoalGear - Admin Management Controller
  *
- * Handles admin dashboard metrics, product CRUD operations,
- * inventory management, and order status updates.
+ * Handles admin dashboard metrics, product CRUD operations across
+ * Footballs, Boots, and Socks, inventory management, and order status updates.
  */
 
 const { getDb } = require('../config/supabase');
@@ -58,15 +58,17 @@ async function getDashboardStats(req, res) {
 }
 
 /**
- * Admin CRUD: Create a new football product
+ * Admin CRUD: Create a new product (Ball, Boots, or Socks)
  */
 async function createProduct(req, res) {
     try {
         const {
             name,
             brand,
+            department,
             category,
             ball_size,
+            size_label,
             surface = 'Grass',
             fifa_rating = 'Standard',
             price,
@@ -76,22 +78,46 @@ async function createProduct(req, res) {
             is_featured = false
         } = req.body;
 
-        if (!name || !brand || !category || ball_size === undefined || price === undefined || stock_quantity === undefined) {
+        if (!name || !brand || !category || price === undefined || stock_quantity === undefined) {
             return res.status(400).json({
-                error: 'Please specify name, brand, category, ball_size, price, and stock_quantity.'
+                error: 'Please specify name, brand, category, price, and stock_quantity.'
             });
         }
 
-        const validCategories = ['Match Ball', 'Training Ball', 'Futsal Ball', 'Retro/Heritage', 'Mini Ball'];
+        const validCategories = [
+            'Match Ball', 'Training Ball', 'Futsal Ball', 'Retro/Heritage', 'Mini Ball',
+            'Football Boots', 'Turf / Futsal Shoes', 'Grip Socks', 'Crew Socks'
+        ];
+
         if (!validCategories.includes(category)) {
             return res.status(400).json({
                 error: `Invalid category. Must be one of: ${validCategories.join(', ')}`
             });
         }
 
-        const parsedSize = parseInt(ball_size, 10);
-        if (![1, 3, 4, 5].includes(parsedSize)) {
-            return res.status(400).json({ error: 'Ball size must be 1, 3, 4, or 5.' });
+        // Infer department if not provided
+        let dept = department;
+        if (!dept) {
+            if (['Football Boots', 'Turf / Futsal Shoes'].includes(category)) {
+                dept = 'Boots';
+            } else if (['Grip Socks', 'Crew Socks'].includes(category)) {
+                dept = 'Socks';
+            } else {
+                dept = 'Balls';
+            }
+        }
+
+        // Compute size_label and ball_size
+        let parsedBallSize = ball_size !== undefined && ball_size !== null ? parseInt(ball_size, 10) : null;
+        if (isNaN(parsedBallSize)) parsedBallSize = null;
+
+        let computedSizeLabel = (size_label || '').trim();
+        if (!computedSizeLabel) {
+            if (parsedBallSize) {
+                computedSizeLabel = `Size ${parsedBallSize}`;
+            } else {
+                computedSizeLabel = dept === 'Boots' ? 'UK 9.0' : (dept === 'Socks' ? 'One Size' : 'Standard');
+            }
         }
 
         const parsedPrice = parseFloat(price);
@@ -101,18 +127,28 @@ async function createProduct(req, res) {
             return res.status(400).json({ error: 'Price and stock quantity must be positive numbers.' });
         }
 
+        // Pick fallback image based on department if not provided
+        let finalImageUrl = (image_url || '').trim();
+        if (!finalImageUrl) {
+            if (dept === 'Boots') finalImageUrl = 'images/products/placeholder-boots.svg';
+            else if (dept === 'Socks') finalImageUrl = 'images/products/placeholder-socks.svg';
+            else finalImageUrl = 'images/products/placeholder-ball.svg';
+        }
+
         const db = getDb();
         const payload = {
             name: name.trim(),
             brand: brand.trim(),
+            department: dept,
             category,
-            ball_size: parsedSize,
+            ball_size: parsedBallSize,
+            size_label: computedSizeLabel,
             surface,
             fifa_rating,
             price: parsedPrice,
             stock_quantity: parsedStock,
             description: (description || '').trim(),
-            image_url: (image_url || 'images/products/placeholder-ball.jpg').trim(),
+            image_url: finalImageUrl,
             is_featured: Boolean(is_featured)
         };
 
@@ -123,21 +159,21 @@ async function createProduct(req, res) {
             .single();
 
         if (error || !newProduct) {
-            return res.status(500).json({ error: 'Failed to create football product in database.' });
+            return res.status(500).json({ error: 'Failed to create product in database.' });
         }
 
         return res.status(201).json({
-            message: 'Football ball added to catalogue successfully!',
+            message: 'Product added to catalogue successfully!',
             product: newProduct
         });
     } catch (err) {
         console.error('Create product error:', err);
-        return res.status(500).json({ error: 'Internal server error creating football.' });
+        return res.status(500).json({ error: 'Internal server error creating product.' });
     }
 }
 
 /**
- * Admin CRUD: Update an existing football product
+ * Admin CRUD: Update an existing product
  */
 async function updateProduct(req, res) {
     try {
@@ -157,8 +193,10 @@ async function updateProduct(req, res) {
         const fields = [
             'name',
             'brand',
+            'department',
             'category',
             'ball_size',
+            'size_label',
             'surface',
             'fifa_rating',
             'price',
@@ -172,8 +210,11 @@ async function updateProduct(req, res) {
             if (req.body[field] !== undefined) {
                 if (field === 'price') {
                     updates[field] = parseFloat(req.body[field]);
-                } else if (field === 'stock_quantity' || field === 'ball_size') {
+                } else if (field === 'stock_quantity') {
                     updates[field] = parseInt(req.body[field], 10);
+                } else if (field === 'ball_size') {
+                    const parsed = parseInt(req.body[field], 10);
+                    updates[field] = isNaN(parsed) ? null : parsed;
                 } else if (field === 'is_featured') {
                     updates[field] = Boolean(req.body[field]);
                 } else {
@@ -190,7 +231,7 @@ async function updateProduct(req, res) {
             .single();
 
         if (error) {
-            return res.status(500).json({ error: 'Failed to update football product.' });
+            return res.status(500).json({ error: 'Failed to update product.' });
         }
 
         return res.status(200).json({
@@ -217,10 +258,10 @@ async function deleteProduct(req, res) {
             .eq('id', id);
 
         if (error) {
-            return res.status(500).json({ error: 'Failed to delete football product.' });
+            return res.status(500).json({ error: 'Failed to delete product.' });
         }
 
-        return res.status(200).json({ message: 'Football ball deleted from catalogue.' });
+        return res.status(200).json({ message: 'Product deleted from catalogue.' });
     } catch (err) {
         console.error('Delete product error:', err);
         return res.status(500).json({ error: 'Internal server error deleting product.' });
