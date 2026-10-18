@@ -503,28 +503,170 @@ hr {
   margin-top: 4px;
 }
 
-/* Responsive adjustments */
+/* Responsive Table Wrapper */
+.tableResponsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 10px;
+}
+
+/* ====================================================================
+   Responsive Adjustments (Mobile, Tablet, Small Screens)
+   ==================================================================== */
 @media (max-width: 768px) {
-  .bodyStyle {
+  body.bodyStyle {
     width: 100%;
-    padding: 8px;
+    padding: 10px 8px;
   }
   .brandTitle {
-    font-size: 32px;
+    font-size: 30px;
+  }
+  .brandTagline {
+    font-size: 13px;
   }
   .topNavBar {
     flex-direction: column;
     align-items: stretch;
-    text-align: center;
+    gap: 8px;
+    padding: 8px 0;
+  }
+  .navLinks {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+  }
+  .navLinks a {
+    padding: 6px 10px;
+    font-size: 13px;
   }
   .navActions {
+    display: flex;
+    flex-wrap: wrap;
     justify-content: center;
+    gap: 6px;
+    width: 100%;
   }
   .classicTableGrid,
   .classicTableGrid tbody,
   .classicTableGrid tr,
   .classicTableGrid td {
     display: block;
+    width: 100% !important;
+  }
+  .classicTableGrid td {
+    padding: 14px 10px;
+    margin-bottom: 12px;
+    border-radius: 4px;
+  }
+}
+
+@media (max-width: 600px) {
+  .heroBanner {
+    padding: 16px 12px;
+  }
+  .heroBanner h2 {
+    font-size: 20px;
+    line-height: 1.3;
+  }
+  .heroBanner p {
+    font-size: 13px;
+  }
+  .productGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .productCard {
+    padding: 8px;
+  }
+  .productImageWrap {
+    height: 135px;
+    margin-bottom: 6px;
+  }
+  .productName {
+    font-size: 13px;
+    line-height: 1.3;
+    margin: 2px 0 4px 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .productPrice {
+    font-size: 15px;
+    margin: 2px 0;
+  }
+  .productSpecsBadge {
+    font-size: 10px;
+    padding: 1px 4px;
+    margin-right: 2px;
+    margin-bottom: 3px;
+  }
+  .cardButtons {
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 6px;
+  }
+  .cardButtons .btn {
+    padding: 5px 6px;
+    font-size: 11px;
+  }
+  .searchToolbar {
+    padding: 10px;
+    margin-bottom: 14px;
+  }
+  .filterControls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .filterControls input[type="text"],
+  .filterControls select {
     width: 100%;
+    flex: 1 1 100%;
+    font-size: 13px;
+    padding: 8px 10px;
+  }
+  .modalOverlay {
+    padding: 6px;
+    align-items: flex-end;
+  }
+  .modalContent {
+    padding: 15px;
+    max-height: 92vh;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    width: 100%;
+  }
+  .modalHeader h3 {
+    font-size: 17px;
+  }
+  .adminStatGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .statCard {
+    padding: 10px;
+  }
+  .statValue {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 380px) {
+  .productGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .productImageWrap {
+    height: 170px;
+  }
+  .productName {
+    font-size: 15px;
+  }
+  .adminStatGrid {
+    grid-template-columns: 1fr;
   }
 }

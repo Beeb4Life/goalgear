@@ -8,8 +8,7 @@ Dynamic e-commerce web application for footballs, football boots, and performanc
 
 ### Customer Account
 - Storefront URL: `/index.html` (or click "Register" / "Sign In")
-- Customers can self-register or sign in with their own email and password to track orders.
-- Demo Customer: `customer@goalgear.demo` / `customer123`
+- Customers can self-register with any email and password to track orders.
 
 ### Administrator Account
 - Portal URL: `/admin.html`

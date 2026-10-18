@@ -155,11 +155,25 @@ async function getProductById(req, res) {
     }
 }
 
+// In-memory cache for filter options (60s TTL)
+let filterOptionsCache = null;
+let filterOptionsCacheExpiry = 0;
+
+function invalidateFilterCache() {
+    filterOptionsCache = null;
+    filterOptionsCacheExpiry = 0;
+}
+
 /**
  * Get available filter options (departments, categories, brands, sizes, surfaces)
  */
 async function getFilterOptions(req, res) {
     try {
+        const now = Date.now();
+        if (filterOptionsCache && now < filterOptionsCacheExpiry) {
+            return res.status(200).json(filterOptionsCache);
+        }
+
         const db = getDb();
         const { data: products, error } = await db.from('products').select('*');
 
@@ -173,13 +187,16 @@ async function getFilterOptions(req, res) {
         const sizes = [...new Set(products.map((p) => p.size_label || (p.ball_size ? `Size ${p.ball_size}` : '')))].filter(Boolean).sort();
         const surfaces = [...new Set(products.map((p) => p.surface))].sort();
 
-        return res.status(200).json({
+        filterOptionsCache = {
             departments,
             categories,
             brands,
             sizes,
             surfaces
-        });
+        };
+        filterOptionsCacheExpiry = now + 60 * 1000;
+
+        return res.status(200).json(filterOptionsCache);
     } catch (err) {
         console.error('Filter options error:', err);
         return res.status(500).json({ error: 'Internal server error loading filter options.' });
@@ -190,5 +207,6 @@ module.exports = {
     getAllProducts,
     getFeaturedProducts,
     getProductById,
-    getFilterOptions
+    getFilterOptions,
+    invalidateFilterCache
 };

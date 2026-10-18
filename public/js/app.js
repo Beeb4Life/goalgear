@@ -461,21 +461,23 @@ function renderCartModal() {
   }).join('');
 
   container.innerHTML = `
-    <table class="dataTable">
-      <thead>
-        <tr>
-          <th></th>
-          <th>Item</th>
-          <th>Price</th>
-          <th>Qty</th>
-          <th>Total</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        ${itemsHtml}
-      </tbody>
-    </table>
+    <div class="tableResponsive">
+      <table class="dataTable">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Item</th>
+            <th>Price</th>
+            <th>Qty</th>
+            <th>Total</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          ${itemsHtml}
+        </tbody>
+      </table>
+    </div>
   `;
 
   if (totalEl) totalEl.textContent = `£${total.toFixed(2)}`;
@@ -612,17 +614,19 @@ async function openOrderHistoryModal() {
         <div style="font-size: 13px; margin-bottom: 8px;">
           <strong>Deliver to:</strong> ${escapeHtml(o.shipping_address)}, ${escapeHtml(o.city)} (${escapeHtml(o.postal_code)})
         </div>
-        <table class="dataTable" style="font-size: 13px; margin: 6px 0;">
-          <tbody>
-            ${(o.items || []).map((i) => `
-              <tr>
-                <td>${escapeHtml(i.product_name)} (${escapeHtml(i.size_label || '')})</td>
-                <td>x${i.quantity}</td>
-                <td>&pound;${parseFloat(i.subtotal).toFixed(2)}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
+        <div class="tableResponsive">
+          <table class="dataTable" style="font-size: 13px; margin: 6px 0;">
+            <tbody>
+              ${(o.items || []).map((i) => `
+                <tr>
+                  <td>${escapeHtml(i.product_name)} (${escapeHtml(i.size_label || '')})</td>
+                  <td>x${i.quantity}</td>
+                  <td>&pound;${parseFloat(i.subtotal).toFixed(2)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
         <div style="text-align: right; font-size: 15px; font-weight: bold; margin-top: 6px;">
           Total: &pound;${parseFloat(o.total_amount).toFixed(2)}
         </div>
