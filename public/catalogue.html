@@ -26,7 +26,7 @@
 
     <div class="navActions">
       <div id="userNavSection"></div>
-      <button class="btn btn-primary" onclick="openCartModal()">
+      <button class="btn btn-primary" id="cartNavBtn" onclick="openCartModal()" style="display: none;">
         &#128722; Cart (<span id="cartCountBadge">0</span>)
       </button>
     </div>
@@ -127,11 +127,11 @@
       <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 14px; margin-top: 14px;">
         <div>
           <span style="color: var(--text-muted); font-size: 13px;">Order Subtotal:</span><br>
-          <strong id="cartTotalDisplay" style="font-size: 20px; color: var(--primary-color);">&pound;0.00</strong>
+          <strong id="cartTotalDisplay" style="font-size: 20px; color: var(--primary-color);">&#8377;0.00</strong>
         </div>
         <div style="display: flex; gap: 8px;">
           <button class="btn btn-secondary" onclick="closeModal('cartModal')">Continue Shopping</button>
-          <button id="proceedCheckoutBtn" class="btn btn-primary" onclick="openCheckoutModal()">Proceed to Demo Checkout</button>
+          <button id="proceedCheckoutBtn" class="btn btn-primary" onclick="openCheckoutModal()">Proceed to Checkout</button>
         </div>
       </div>
     </div>
@@ -140,7 +140,7 @@
   <div id="checkoutModal" class="modalOverlay">
     <div class="modalContent" style="max-width: 540px;">
       <div class="modalHeader">
-        <h3>Demo Order Checkout</h3>
+        <h3>Order Checkout</h3>
         <button class="closeModalBtn" onclick="closeModal('checkoutModal')">&times;</button>
       </div>
       <div id="checkoutContentArea">
@@ -158,30 +158,30 @@
           </div>
           <div class="formGroup">
             <label for="checkoutAddress">Delivery Address *</label>
-            <input type="text" id="checkoutAddress" required placeholder="e.g. 10 Wembley Way">
+            <input type="text" id="checkoutAddress" required placeholder="e.g. 10 Marine Drive">
           </div>
           <div style="display: flex; gap: 10px;">
             <div class="formGroup" style="flex: 1;">
               <label for="checkoutCity">City *</label>
-              <input type="text" id="checkoutCity" required placeholder="e.g. London">
+              <input type="text" id="checkoutCity" required placeholder="e.g. Mumbai">
             </div>
             <div class="formGroup" style="flex: 1;">
               <label for="checkoutPostal">Postal Code *</label>
-              <input type="text" id="checkoutPostal" required placeholder="e.g. HA9 0WS">
+              <input type="text" id="checkoutPostal" required placeholder="e.g. 400703">
             </div>
           </div>
           <div class="formGroup">
             <label for="checkoutCountry">Country</label>
-            <input type="text" id="checkoutCountry" value="United Kingdom" required>
+            <input type="text" id="checkoutCountry" value="India" required>
           </div>
 
-          <div style="background-color: #fff3cd; border: 1px solid #ffeeba; border-radius: 4px; padding: 10px; font-size: 12px; margin-bottom: 15px; color: #856404;">
-            <strong>Demo Checkout:</strong> No real payment card or banking information is requested. Clicking "Confirm Demo Order" decrements live inventory in Supabase without charging real money.
+          <div style="background-color: #f8f9fa; border: 1px solid var(--border-color); border-radius: 4px; padding: 10px; font-size: 12px; margin-bottom: 15px; color: var(--text-muted);">
+            <strong>Order Note:</strong> Orders placed are registered live in your account order history and inventory is dynamically updated.
           </div>
 
           <div style="display: flex; justify-content: flex-end; gap: 8px;">
             <button type="button" class="btn btn-secondary" onclick="closeModal('checkoutModal')">Cancel</button>
-            <button type="submit" id="submitOrderBtn" class="btn btn-primary">Confirm &amp; Place Demo Order</button>
+            <button type="submit" id="submitOrderBtn" class="btn btn-primary">Confirm &amp; Place Order</button>
           </div>
         </form>
       </div>

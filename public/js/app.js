@@ -194,7 +194,7 @@ function createProductCardHtml(p) {
           <span class="productSpecsBadge">${escapeHtml(p.category)}</span>
           <span class="productSpecsBadge">${escapeHtml(p.surface)}</span>
         </div>
-        <div class="productPrice">&pound;${parseFloat(p.price).toFixed(2)}</div>
+        <div class="productPrice">&#8377;${parseFloat(p.price).toFixed(2)}</div>
         <div class="stockBadge ${stockClass}">${stockText}</div>
       </div>
       <div class="cardButtons">
@@ -261,6 +261,12 @@ function updateCartBadge() {
 }
 
 function addToCart(productId, qty = 1) {
+  if (!state.user || !state.token) {
+    alert('Please sign in or register to add items to your shopping cart.');
+    openAuthModal('login');
+    return;
+  }
+
   const product = state.products.find((p) => p.id === productId) ||
                   state.featured.find((p) => p.id === productId);
 
@@ -378,7 +384,7 @@ async function openProductDetail(productId) {
           <div style="color: var(--text-muted); font-size: 13px; margin-bottom: 12px;">
             Brand: <strong>${escapeHtml(p.brand)}</strong> &bull; Size: <strong>${escapeHtml(sizeDisplay)}</strong>
           </div>
-          <div style="font-size: 22px; font-weight: bold; margin-bottom: 12px;">&pound;${parseFloat(p.price).toFixed(2)}</div>
+          <div style="font-size: 22px; font-weight: bold; margin-bottom: 12px;">&#8377;${parseFloat(p.price).toFixed(2)}</div>
           
           <table class="dataTable" style="margin-bottom: 15px;">
             <tr><th>Department</th><td>${escapeHtml(p.department || 'Balls')}</td></tr>
@@ -427,7 +433,7 @@ function renderCartModal() {
 
   if (state.cart.length === 0) {
     container.innerHTML = '<div class="center" style="padding: 30px; color: #6c757d;">Your shopping cart is currently empty.</div>';
-    if (totalEl) totalEl.textContent = '£0.00';
+    if (totalEl) totalEl.textContent = '₹0.00';
     if (checkoutBtn) checkoutBtn.disabled = true;
     return;
   }
@@ -446,13 +452,13 @@ function renderCartModal() {
           <strong>${escapeHtml(item.name)}</strong><br>
           <small style="color: #6c757d;">${escapeHtml(item.brand)} &bull; ${escapeHtml(item.size_label)}</small>
         </td>
-        <td>&pound;${item.price.toFixed(2)}</td>
+        <td>&#8377;${item.price.toFixed(2)}</td>
         <td>
           <button class="btn btn-secondary btn-sm" onclick="changeCartQty('${item.productId}', -1)">-</button>
           <span style="display: inline-block; width: 24px; text-align: center; font-weight: bold;">${item.quantity}</span>
           <button class="btn btn-secondary btn-sm" onclick="changeCartQty('${item.productId}', 1)">+</button>
         </td>
-        <td>&pound;${itemTotal.toFixed(2)}</td>
+        <td>&#8377;${itemTotal.toFixed(2)}</td>
         <td>
           <button class="btn btn-danger btn-sm" onclick="removeCartItem('${item.productId}')">&times;</button>
         </td>
@@ -480,7 +486,7 @@ function renderCartModal() {
     </div>
   `;
 
-  if (totalEl) totalEl.textContent = `£${total.toFixed(2)}`;
+  if (totalEl) totalEl.textContent = `₹${total.toFixed(2)}`;
   if (checkoutBtn) checkoutBtn.disabled = false;
 }
 
@@ -506,10 +512,10 @@ function openCheckoutModal() {
   if (summaryEl) {
     summaryEl.innerHTML = `
       <div style="background-color: #f8f9fa; padding: 12px; border-radius: 4px; margin-bottom: 12px;">
-        <strong>Items (${state.cart.length}):</strong> &pound;${total.toFixed(2)}<br>
-        <strong style="color: var(--success-color);">Standard Delivery:</strong> FREE (Demo)<br>
+        <strong>Items (${state.cart.length}):</strong> &#8377;${total.toFixed(2)}<br>
+        <strong style="color: var(--success-color);">Standard Delivery:</strong> FREE<br>
         <hr style="margin: 8px 0;">
-        <strong style="font-size: 16px;">Total: &pound;${total.toFixed(2)}</strong>
+        <strong style="font-size: 16px;">Total: &#8377;${total.toFixed(2)}</strong>
       </div>
     `;
   }
@@ -531,8 +537,8 @@ async function handlePlaceOrder(e) {
     shippingAddress: document.getElementById('checkoutAddress').value.trim(),
     city: document.getElementById('checkoutCity').value.trim(),
     postalCode: document.getElementById('checkoutPostal').value.trim(),
-    country: document.getElementById('checkoutCountry').value.trim() || 'United Kingdom',
-    paymentMethod: 'Demo Checkout',
+    country: document.getElementById('checkoutCountry').value.trim() || 'India',
+    paymentMethod: 'Credit / Debit Card',
     items: state.cart.map((i) => ({ productId: i.productId, quantity: i.quantity }))
   };
 
@@ -556,11 +562,11 @@ async function handlePlaceOrder(e) {
           <p>Thank you, <strong>${escapeHtml(payload.customerName)}</strong>.</p>
           <div style="background-color: #e8f5e9; padding: 12px; border-radius: 4px; margin: 15px auto; max-width: 380px;">
             Order Reference: <strong>${escapeHtml(res.order.order_number)}</strong><br>
-            Total Amount: <strong>&pound;${parseFloat(res.order.total_amount).toFixed(2)}</strong><br>
+            Total Amount: <strong>&#8377;${parseFloat(res.order.total_amount).toFixed(2)}</strong><br>
             Status: <span class="statusBadge status-processing">Processing</span>
           </div>
           <p style="font-size: 13px; color: #6c757d;">
-            This was a simulated demo order. No payment was processed. Your order has been registered in the system.
+            Your order has been confirmed and registered in the system. You can track its status under My Orders.
           </p>
           <button class="btn btn-primary" onclick="closeModal('checkoutModal'); location.reload();">Continue Shopping</button>
         </div>
@@ -621,14 +627,14 @@ async function openOrderHistoryModal() {
                 <tr>
                   <td>${escapeHtml(i.product_name)} (${escapeHtml(i.size_label || '')})</td>
                   <td>x${i.quantity}</td>
-                  <td>&pound;${parseFloat(i.subtotal).toFixed(2)}</td>
+                  <td>&#8377;${parseFloat(i.subtotal).toFixed(2)}</td>
                 </tr>
               `).join('')}
             </tbody>
           </table>
         </div>
         <div style="text-align: right; font-size: 15px; font-weight: bold; margin-top: 6px;">
-          Total: &pound;${parseFloat(o.total_amount).toFixed(2)}
+          Total: &#8377;${parseFloat(o.total_amount).toFixed(2)}
         </div>
       </div>
     `).join('');
@@ -642,9 +648,11 @@ async function openOrderHistoryModal() {
 // ====================================================================
 function initAuthUI() {
   const userSection = document.getElementById('userNavSection');
+  const cartBtn = document.getElementById('cartNavBtn');
   if (!userSection) return;
 
   if (state.user && state.token) {
+    if (cartBtn) cartBtn.style.display = 'inline-block';
     const isAdmin = state.user.role === 'admin';
     userSection.innerHTML = `
       <span style="font-size: 13px; font-weight: bold; color: var(--primary-color);">Hello, ${escapeHtml(state.user.fullName || 'Player')}</span>
@@ -653,6 +661,7 @@ function initAuthUI() {
       <button class="btn btn-secondary btn-sm" onclick="logout()">Logout</button>
     `;
   } else {
+    if (cartBtn) cartBtn.style.display = 'none';
     userSection.innerHTML = `
       <button class="btn btn-secondary btn-sm" onclick="openAuthModal('login')">Sign In</button>
       <button class="btn btn-primary btn-sm" onclick="openAuthModal('register')">Register</button>

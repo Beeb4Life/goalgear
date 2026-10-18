@@ -146,7 +146,7 @@ async function loadDashboardStats() {
     const data = await adminApiRequest('/api/admin/stats');
     const stats = data.stats;
 
-    document.getElementById('statRevenue').textContent = `£${stats.totalRevenue.toFixed(2)}`;
+    document.getElementById('statRevenue').textContent = `₹${stats.totalRevenue.toFixed(2)}`;
     document.getElementById('statOrders').textContent = stats.totalOrders;
     document.getElementById('statProducts').textContent = stats.totalProducts;
     document.getElementById('statLowStock').textContent = stats.lowStockCount;
@@ -198,7 +198,7 @@ async function loadAdminProducts() {
           <td><span class="productSpecsBadge">${escapeHtml(p.category)}</span></td>
           <td>${escapeHtml(sizeDisplay)}</td>
           <td>${escapeHtml(p.surface)}</td>
-          <td><strong>&pound;${parseFloat(p.price).toFixed(2)}</strong></td>
+          <td><strong>&#8377;${parseFloat(p.price).toFixed(2)}</strong></td>
           <td>
             <div style="display: flex; align-items: center; gap: 4px;">
               <input 
@@ -400,7 +400,7 @@ async function loadAdminOrders(statusFilter = '') {
             <small>${escapeHtml(o.shipping_address)}, ${escapeHtml(o.city)}</small>
           </td>
           <td style="font-size: 13px;">${itemsList}</td>
-          <td><strong>&pound;${parseFloat(o.total_amount).toFixed(2)}</strong></td>
+          <td><strong>&#8377;${parseFloat(o.total_amount).toFixed(2)}</strong></td>
           <td>
             <span class="statusBadge status-${escapeHtml(o.status)}">${escapeHtml(o.status)}</span>
           </td>

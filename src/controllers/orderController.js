@@ -28,8 +28,8 @@ async function createOrder(req, res) {
             shippingAddress,
             city,
             postalCode,
-            country = 'United Kingdom',
-            paymentMethod = 'Demo Checkout',
+            country = 'India',
+            paymentMethod = 'Online / Card Payment',
             notes = ''
         } = req.body;
 

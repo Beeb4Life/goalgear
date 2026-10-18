@@ -32,8 +32,8 @@ describe('Static Asset & Multi-Page Serving', () => {
     it('should serve contact.html with 200 OK and store hours', async () => {
         const res = await request(app).get('/contact.html');
         expect(res.status).toBe(200);
-        expect(res.text).toContain('Contact &amp; Demo Centre');
-        expect(res.text).toContain('London Headquarters');
+        expect(res.text).toContain('Contact &amp; Showroom');
+        expect(res.text).toContain('Mumbai Headquarters');
     });
 
     it('should serve admin.html with 200 OK', async () => {
