@@ -69,37 +69,83 @@ function checkAdminAuth() {
   }
 }
 
-async function adminApiRequest(endpoint, options = {}) {
-  const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
-  if (adminState.token) {
-    headers['Authorization'] = `Bearer ${adminState.token}`;
+// ====================================================================
+// Visual Request Progress Bar
+// ====================================================================
+let activeAdminRequestsCount = 0;
+function showAdminLoadingBar() {
+  activeAdminRequestsCount++;
+  let bar = document.getElementById('topProgressBar');
+  if (!bar) {
+    bar = document.createElement('div');
+    bar.id = 'topProgressBar';
+    document.body.prepend(bar);
   }
+  bar.classList.remove('done');
+  bar.classList.add('active');
+}
 
-  const res = await fetch(endpoint, { ...options, headers });
-  const data = await res.json().catch(() => ({}));
-
-  if (res.status === 401 || res.status === 403) {
-    if (res.status === 403 && data.error && data.error.includes('Administrator privileges')) {
-      alert('Access Denied: This account does not have administrator privileges.');
-      adminLogout();
+function hideAdminLoadingBar() {
+  activeAdminRequestsCount = Math.max(0, activeAdminRequestsCount - 1);
+  if (activeAdminRequestsCount === 0) {
+    const bar = document.getElementById('topProgressBar');
+    if (bar) {
+      bar.classList.add('done');
+      bar.classList.remove('active');
+      setTimeout(() => {
+        if (activeAdminRequestsCount === 0) {
+          bar.classList.remove('done');
+          bar.style.width = '0%';
+        }
+      }, 350);
     }
   }
+}
 
-  if (!res.ok) {
-    throw new Error(data.error || `Server HTTP ${res.status}: ${res.statusText || 'error'}`);
+async function adminApiRequest(endpoint, options = {}) {
+  showAdminLoadingBar();
+  try {
+    const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+    if (adminState.token) {
+      headers['Authorization'] = `Bearer ${adminState.token}`;
+    }
+
+    const res = await fetch(endpoint, { ...options, headers });
+    const data = await res.json().catch(() => ({}));
+
+    if (res.status === 401 || res.status === 403) {
+      if (res.status === 403 && data.error && data.error.includes('Administrator privileges')) {
+        alert('Access Denied: This account does not have administrator privileges.');
+        adminLogout();
+      }
+    }
+
+    if (!res.ok) {
+      throw new Error(data.error || `Server HTTP ${res.status}: ${res.statusText || 'error'}`);
+    }
+
+    return data;
+  } finally {
+    hideAdminLoadingBar();
   }
-
-  return data;
 }
 
 async function handleAdminLogin(e) {
   e.preventDefault();
   const alertEl = document.getElementById('adminLoginAlert');
+  const submitBtn = e.target.querySelector('button[type="submit"]');
   const email = document.getElementById('adminEmail').value.trim();
   const password = document.getElementById('adminPassword').value;
 
   if (alertEl) alertEl.style.display = 'none';
 
+  const origBtnText = submitBtn ? submitBtn.innerHTML : '';
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="btn-spinner"></span> Authenticating...';
+  }
+
+  showAdminLoadingBar();
   try {
     const res = await fetch('/api/auth/login', {
       method: 'POST',
@@ -123,10 +169,16 @@ async function handleAdminLogin(e) {
 
     checkAdminAuth();
   } catch (err) {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = origBtnText || 'Sign In to Dashboard';
+    }
     if (alertEl) {
       alertEl.style.display = 'block';
       alertEl.textContent = err.message;
     }
+  } finally {
+    hideAdminLoadingBar();
   }
 }
 
@@ -208,7 +260,7 @@ async function loadAdminProducts() {
                 min="0" 
                 style="width: 60px; padding: 4px 6px; font-size: 13px; border: 1px solid ${isLow ? 'var(--danger-color)' : '#ced4da'}; border-radius: 4px;"
               >
-              <button class="btn btn-secondary btn-sm" onclick="quickUpdateStock('${p.id}')">Save</button>
+              <button class="btn btn-secondary btn-sm" onclick="quickUpdateStock('${p.id}', this)">Save</button>
             </div>
             ${isLow ? '<span style="font-size: 11px; color: var(--danger-color); font-weight: bold;">Low Stock!</span>' : ''}
           </td>
@@ -279,6 +331,7 @@ function openEditProductModal(id) {
 async function handleProductFormSubmit(e) {
   e.preventDefault();
   const alertEl = document.getElementById('productModalAlert');
+  const submitBtn = e.target.querySelector('button[type="submit"]');
   const editId = document.getElementById('prodEditId').value;
   const isEditing = Boolean(editId);
 
@@ -307,6 +360,12 @@ async function handleProductFormSubmit(e) {
     is_featured: document.getElementById('prodFeatured').checked
   };
 
+  const origBtnText = submitBtn ? submitBtn.innerHTML : '';
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="btn-spinner"></span> Saving Product...';
+  }
+
   try {
     const endpoint = isEditing ? `/api/admin/products/${editId}` : '/api/admin/products';
     const method = isEditing ? 'PUT' : 'POST';
@@ -325,10 +384,15 @@ async function handleProductFormSubmit(e) {
       alertEl.style.display = 'block';
       alertEl.textContent = err.message;
     }
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = origBtnText || 'Save Product';
+    }
   }
 }
 
-async function quickUpdateStock(productId) {
+async function quickUpdateStock(productId, btnEl = null) {
   const input = document.getElementById(`stockInput-${productId}`);
   const newStock = parseInt(input ? input.value : '0', 10);
 
@@ -337,15 +401,40 @@ async function quickUpdateStock(productId) {
     return;
   }
 
+  const btn = btnEl || (typeof event !== 'undefined' && event && event.target && event.target.tagName === 'BUTTON' ? event.target : null);
+  const origBtnHtml = btn ? btn.innerHTML : '';
+
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="btn-spinner"></span> Saving...';
+  }
+  if (input) input.disabled = true;
+
   try {
     await adminApiRequest(`/api/admin/products/${productId}/stock`, {
       method: 'PATCH',
       body: JSON.stringify({ stock_quantity: newStock })
     });
 
+    if (btn) {
+      btn.innerHTML = 'Saved &#10004;';
+      btn.classList.add('btn-success-feedback');
+      setTimeout(() => {
+        btn.innerHTML = origBtnHtml || 'Save';
+        btn.classList.remove('btn-success-feedback');
+        btn.disabled = false;
+        if (input) input.disabled = false;
+      }, 1200);
+    }
+
     loadDashboardStats();
     loadAdminProducts();
   } catch (err) {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = origBtnHtml || 'Save';
+    }
+    if (input) input.disabled = false;
     alert(`Failed to update stock: ${err.message}`);
   }
 }
@@ -406,7 +495,7 @@ async function loadAdminOrders(statusFilter = '') {
           </td>
           <td>
             <select 
-              onchange="changeOrderStatus('${o.id}', this.value)" 
+              onchange="changeOrderStatus('${o.id}', this.value, this)" 
               style="padding: 4px 6px; font-size: 13px; border: 1px solid var(--border-color); border-radius: 4px;"
             >
               <option value="pending" ${o.status === 'pending' ? 'selected' : ''}>Pending</option>
@@ -424,7 +513,10 @@ async function loadAdminOrders(statusFilter = '') {
   }
 }
 
-async function changeOrderStatus(orderId, newStatus) {
+async function changeOrderStatus(orderId, newStatus, selectEl = null) {
+  const sel = selectEl || (typeof event !== 'undefined' && event && event.target && event.target.tagName === 'SELECT' ? event.target : null);
+  if (sel) sel.disabled = true;
+
   try {
     await adminApiRequest(`/api/admin/orders/${orderId}/status`, {
       method: 'PATCH',
@@ -434,6 +526,7 @@ async function changeOrderStatus(orderId, newStatus) {
     loadDashboardStats();
     loadAdminOrders(adminState.currentOrderFilter);
   } catch (err) {
+    if (sel) sel.disabled = false;
     alert(`Failed to update order status: ${err.message}`);
   }
 }

@@ -670,3 +670,58 @@ hr {
     grid-template-columns: 1fr;
   }
 }
+
+/* ====================================================================
+   Request Visual Feedback & Double-Click Protection
+   ==================================================================== */
+#topProgressBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-color), var(--primary-color));
+  z-index: 999999;
+  transition: width 0.3s ease-out, opacity 0.3s ease;
+  pointer-events: none;
+  opacity: 0;
+}
+
+#topProgressBar.active {
+  opacity: 1;
+  width: 80%;
+}
+
+#topProgressBar.done {
+  width: 100%;
+  opacity: 0;
+}
+
+.btn-spinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  border-top-color: #ffffff;
+  animation: gg-spin 0.6s linear infinite;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+@keyframes gg-spin {
+  to { transform: rotate(360deg); }
+}
+
+button:disabled,
+input:disabled,
+select:disabled {
+  opacity: 0.65 !important;
+  cursor: not-allowed !important;
+}
+
+.btn-success-feedback {
+  background-color: var(--success-color) !important;
+  border-color: var(--success-color) !important;
+  color: #ffffff !important;
+}

@@ -76,19 +76,57 @@ function handleImageFallback(img, fallbackImg) {
 window.handleImageFallback = handleImageFallback;
 
 // ====================================================================
+// Visual Request Progress Bar
+// ====================================================================
+let activeRequestsCount = 0;
+function showLoadingBar() {
+  activeRequestsCount++;
+  let bar = document.getElementById('topProgressBar');
+  if (!bar) {
+    bar = document.createElement('div');
+    bar.id = 'topProgressBar';
+    document.body.prepend(bar);
+  }
+  bar.classList.remove('done');
+  bar.classList.add('active');
+}
+
+function hideLoadingBar() {
+  activeRequestsCount = Math.max(0, activeRequestsCount - 1);
+  if (activeRequestsCount === 0) {
+    const bar = document.getElementById('topProgressBar');
+    if (bar) {
+      bar.classList.add('done');
+      bar.classList.remove('active');
+      setTimeout(() => {
+        if (activeRequestsCount === 0) {
+          bar.classList.remove('done');
+          bar.style.width = '0%';
+        }
+      }, 350);
+    }
+  }
+}
+
+// ====================================================================
 // API Calls
 // ====================================================================
 async function apiRequest(endpoint, options = {}) {
-  const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
-  if (state.token) {
-    headers['Authorization'] = `Bearer ${state.token}`;
+  showLoadingBar();
+  try {
+    const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+    if (state.token) {
+      headers['Authorization'] = `Bearer ${state.token}`;
+    }
+    const res = await fetch(endpoint, { ...options, headers });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.error || `Server HTTP ${res.status}: ${res.statusText || 'request failed'}`);
+    }
+    return data;
+  } finally {
+    hideLoadingBar();
   }
-  const res = await fetch(endpoint, { ...options, headers });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) {
-    throw new Error(data.error || `Server HTTP ${res.status}: ${res.statusText || 'request failed'}`);
-  }
-  return data;
 }
 
 async function fetchFeaturedProducts() {
@@ -201,7 +239,7 @@ function createProductCardHtml(p) {
         <button class="btn btn-secondary btn-sm" onclick="openProductDetail('${p.id}')">Details</button>
         <button 
           class="btn btn-primary btn-sm" 
-          onclick="addToCart('${p.id}')" 
+          onclick="addToCart('${p.id}', 1, this)" 
           ${inStock ? '' : 'disabled style="opacity: 0.5; cursor: not-allowed;"'}
         >
           Add to Cart
@@ -260,12 +298,14 @@ function updateCartBadge() {
   }
 }
 
-function addToCart(productId, qty = 1) {
+function addToCart(productId, qty = 1, btnEl = null) {
   if (!state.user || !state.token) {
     alert('Please sign in or register to add items to your shopping cart.');
     openAuthModal('login');
     return;
   }
+
+  const btn = btnEl || (typeof event !== 'undefined' && event && event.target && event.target.tagName === 'BUTTON' ? event.target : null);
 
   const product = state.products.find((p) => p.id === productId) ||
                   state.featured.find((p) => p.id === productId);
@@ -273,17 +313,17 @@ function addToCart(productId, qty = 1) {
   if (!product) {
     // Attempt fast fetch if not in active state array
     apiRequest(`/api/products/${productId}`).then((data) => {
-      performAddToCart(data.product, qty);
+      performAddToCart(data.product, qty, btn);
     }).catch(() => {
       alert('Product details could not be found.');
     });
     return;
   }
 
-  performAddToCart(product, qty);
+  performAddToCart(product, qty, btn);
 }
 
-function performAddToCart(product, qty) {
+function performAddToCart(product, qty, btnEl = null) {
   if (product.stock_quantity <= 0) {
     alert('This item is currently out of stock.');
     return;
@@ -313,7 +353,20 @@ function performAddToCart(product, qty) {
   }
 
   saveCart();
-  alert(`Added ${qty}x "${product.name}" to your shopping cart!`);
+
+  if (btnEl) {
+    const origHtml = btnEl.innerHTML;
+    btnEl.innerHTML = 'Added &#10004;';
+    btnEl.classList.add('btn-success-feedback');
+    btnEl.disabled = true;
+    setTimeout(() => {
+      btnEl.innerHTML = origHtml;
+      btnEl.classList.remove('btn-success-feedback');
+      btnEl.disabled = false;
+    }, 1100);
+  } else {
+    alert(`Added ${qty}x "${product.name}" to your shopping cart!`);
+  }
 }
 
 function changeCartQty(productId, delta) {
@@ -400,7 +453,7 @@ async function openProductDetail(productId) {
 
           <div style="display: flex; gap: 10px; align-items: center;">
             <input type="number" id="detailQtyInput" value="1" min="1" max="${p.stock_quantity}" style="width: 70px; padding: 7px; border: 1px solid #ced4da; border-radius: 4px;" ${inStock ? '' : 'disabled'}>
-            <button class="btn btn-primary" onclick="addToCartFromDetail('${p.id}')" ${inStock ? '' : 'disabled style="opacity: 0.5;"'}>
+            <button class="btn btn-primary" onclick="addToCartFromDetail('${p.id}', this)" ${inStock ? '' : 'disabled style="opacity: 0.5;"'}>
               Add to Shopping Cart
             </button>
           </div>
@@ -412,11 +465,13 @@ async function openProductDetail(productId) {
   }
 }
 
-function addToCartFromDetail(productId) {
+function addToCartFromDetail(productId, btnEl = null) {
   const qtyInput = document.getElementById('detailQtyInput');
   const qty = parseInt(qtyInput ? qtyInput.value : '1', 10) || 1;
-  addToCart(productId, qty);
-  closeModal('productDetailModal');
+  addToCart(productId, qty, btnEl);
+  setTimeout(() => {
+    closeModal('productDetailModal');
+  }, 650);
 }
 
 // Shopping Cart Modal
@@ -542,7 +597,11 @@ async function handlePlaceOrder(e) {
     items: state.cart.map((i) => ({ productId: i.productId, quantity: i.quantity }))
   };
 
-  if (btn) btn.disabled = true;
+  const origBtnContent = btn ? btn.innerHTML : '';
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="btn-spinner"></span> Processing Order...';
+  }
 
   try {
     const res = await apiRequest('/api/orders', {
@@ -573,7 +632,10 @@ async function handlePlaceOrder(e) {
       `;
     }
   } catch (err) {
-    if (btn) btn.disabled = false;
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = origBtnContent || 'Confirm &amp; Place Order';
+    }
     if (alertEl) {
       alertEl.className = 'alertBox alertError';
       alertEl.style.display = 'block';
@@ -694,8 +756,15 @@ function openAuthModal(view = 'login') {
 async function handleLogin(e) {
   e.preventDefault();
   const alertEl = document.getElementById('authAlert');
+  const submitBtn = e.target.querySelector('button[type="submit"]');
   const email = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value;
+
+  const origBtnContent = submitBtn ? submitBtn.innerHTML : '';
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="btn-spinner"></span> Signing in...';
+  }
 
   try {
     const res = await apiRequest('/api/auth/login', {
@@ -712,6 +781,10 @@ async function handleLogin(e) {
     initAuthUI();
     alert(`Welcome back, ${res.user.fullName}!`);
   } catch (err) {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = origBtnContent || 'Sign In';
+    }
     if (alertEl) {
       alertEl.className = 'alertBox alertError';
       alertEl.style.display = 'block';
@@ -723,9 +796,16 @@ async function handleLogin(e) {
 async function handleRegister(e) {
   e.preventDefault();
   const alertEl = document.getElementById('authAlert');
+  const submitBtn = e.target.querySelector('button[type="submit"]');
   const fullName = document.getElementById('regName').value.trim();
   const email = document.getElementById('regEmail').value.trim();
   const password = document.getElementById('regPassword').value;
+
+  const origBtnContent = submitBtn ? submitBtn.innerHTML : '';
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="btn-spinner"></span> Creating Account...';
+  }
 
   try {
     const res = await apiRequest('/api/auth/register', {
@@ -742,6 +822,10 @@ async function handleRegister(e) {
     initAuthUI();
     alert(`Account created successfully! Welcome to GoalGear, ${res.user.fullName}!`);
   } catch (err) {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = origBtnContent || 'Create Account';
+    }
     if (alertEl) {
       alertEl.className = 'alertBox alertError';
       alertEl.style.display = 'block';
